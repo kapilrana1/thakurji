@@ -1,0 +1,380 @@
+/* =============================================
+   THAKURJI ASSOCIATES - Professional Theme
+   Color Palette:
+     Primary Gold  : #c9a227
+     Deep Navy     : #0a192f
+     Sapphire Blue : #1e3a5f
+     Mid Blue      : #2d5490
+     Light BG      : #f0f4f8
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --gold:        #c9a227;
+  --gold-dark:   #a6841a;
+  --gold-light:  #e8c14f;
+  --navy-deep:   #0a192f;
+  --navy:        #1e3a5f;
+  --navy-mid:    #2d5490;
+  --navy-light:  #4472b8;
+  --bg-light:    #f0f4f8;
+  --text-dark:   #1a2332;
+  --text-muted:  #7a8aa0;
+}
+
+/* ---- Base ---- */
+body {
+  font-family: 'Inter', Arial, sans-serif;
+  color: #3a4a5c;
+  background-color: #fff;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', 'Yantramanav', serif;
+  color: var(--text-dark);
+}
+
+p { color: var(--text-muted); }
+
+strong { color: var(--text-dark); }
+
+/* ---- Top Bar ---- */
+.over_header {
+  background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 100%);
+  border-bottom: 2px solid var(--gold);
+}
+
+.over_header a,
+.over_header span {
+  color: #c8d8f0 !important;
+  font-size: 12px;
+}
+
+.over_header span img { filter: brightness(1.8) sepia(0.3); }
+
+/* ---- Header Nav ---- */
+.fixblock_main {
+  background: linear-gradient(180deg, rgba(10,25,47,0.92) 0%, rgba(10,25,47,0.75) 100%),
+              url(../images/header_main.jpg) no-repeat top center;
+  background-size: cover;
+}
+
+.header_type_1 {
+  background: linear-gradient(180deg, rgba(10,25,47,0.55) 0%, rgba(10,25,47,0.1) 60%),
+              url(../images/header_main.jpg) no-repeat top center;
+  background-size: cover;
+}
+
+.header_type_2 { background: var(--navy-deep); }
+
+.border_bottom { border-bottom: 1px solid rgba(201,162,39,0.35); }
+
+/* ---- Buttons ---- */
+.button_fat {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+  border: 2px solid var(--gold);
+  color: var(--navy-deep);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 15px rgba(201,162,39,0.3);
+}
+
+.button_fat:visited { color: var(--navy-deep); }
+
+.button_fat:hover {
+  background: transparent;
+  color: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 4px 20px rgba(201,162,39,0.5);
+}
+
+.button_flat {
+  border: 2px solid rgba(255,255,255,0.7);
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+.button_flat:hover {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy-deep);
+}
+
+/* ---- Header Tips (bottom boxes) ---- */
+.tip_1 {
+  background: url(../images/tip1bg.png) no-repeat right bottom,
+              linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-right: 1px solid rgba(201,162,39,0.3);
+}
+
+.tip_2 {
+  background: url(../images/tip2bg.png) no-repeat right bottom,
+              linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%);
+  border-right: 1px solid rgba(201,162,39,0.3);
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.tip_3 {
+  background: url(../images/tip3bg.png) no-repeat right bottom,
+              linear-gradient(135deg, var(--navy-light) 0%, #5a88cc 100%);
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.tips h4 { color: #fff; }
+.tips p { color: #c0d4f0; }
+
+/* ---- Offer Section ---- */
+.offer-section { background-color: #fff; }
+.offer-section-heading h5 { color: var(--navy-deep); }
+.offer-section .offers { border-bottom: 1px solid #e0e8f0; }
+.offer-section .offers h4 { color: var(--navy); }
+.offer-section .offers img { filter: hue-rotate(200deg) brightness(0.8) saturate(1.5); }
+
+/* ---- Calculate Section ---- */
+.calculate-section {
+  background: linear-gradient(135deg, var(--bg-light) 0%, #dce8f5 100%);
+}
+
+.calculate-section h5 { color: var(--navy-deep); }
+
+.calculate-section input {
+  background-color: #e2eaf5;
+  box-shadow: 0px -2px 0px #b8cce0;
+  color: var(--text-dark);
+}
+
+#total {
+  color: var(--gold-dark);
+  font-weight: 700;
+}
+
+/* ---- Pricing Section ---- */
+.pricing-section .pricing_up { background-color: var(--bg-light); }
+
+.pricing-section .pricing_up .pricing_up_p { color: var(--gold-dark); }
+
+.pricing-section .rates {
+  color: var(--gold-dark);
+}
+
+.pricing-section .pricing_bot {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-top: 1px solid var(--gold);
+}
+
+.pricing-section .pricing_bot p { color: #d0e0f5; }
+
+.pricing-section .pricing:hover .pricing_up { background-color: var(--navy); }
+.pricing-section .pricing:hover .pricing_up span,
+.pricing-section .pricing:hover .pricing_up p { color: #fff; }
+.pricing-section .pricing:hover .pricing_bot { background: var(--navy-deep); }
+.pricing-section .pricing:hover .pricing_bot p { color: #a0c0e0; }
+
+/* Need Help section */
+.pricing-section .pricing_help h5 { color: var(--gold-dark); }
+.pricing-section .contact a:hover { color: var(--gold-dark); }
+
+/* ---- Solutions Section ---- */
+.solutions-section { background: url(../images/solutions_bg.jpg) no-repeat top center; }
+
+.solutions-section .button_flat {
+  background-color: #fff;
+  color: var(--navy);
+  border-color: #fff;
+}
+
+.solutions-section .button_flat:hover {
+  background-color: var(--gold);
+  color: var(--navy-deep);
+  border-color: var(--gold);
+}
+
+/* ---- Testimonials ---- */
+.testimonials-section .whois { color: var(--gold-dark); }
+
+/* ---- Contact Section ---- */
+.contact-section .button_flat {
+  background-color: #fff;
+  color: var(--navy);
+  border-color: #fff;
+}
+
+.contact-section .button_flat:hover {
+  background-color: var(--gold);
+  color: var(--navy-deep);
+  border-color: var(--gold);
+}
+
+/* ---- Banner Section ---- */
+.banner-section {
+  background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 100%);
+  border-top: 4px solid var(--gold);
+}
+
+.banner-section h2 { color: #fff; }
+.banner-section strong { color: var(--gold); }
+
+/* ---- Footer ---- */
+footer {
+  background: linear-gradient(180deg, var(--navy-deep) 0%, #060f1e 100%);
+  border-top: 3px solid var(--gold);
+}
+
+footer h6 { color: var(--gold); }
+footer strong { color: #d0e0f5; }
+footer span { color: var(--gold); }
+footer .footer_sec_1 span { color: #8a9bb5; }
+footer .footer_sec_2 a { color: #c0d4f0; }
+footer .footer_sec_2 a:hover { color: var(--gold); }
+footer hr { border-top: 1px solid #1e3050; }
+
+footer input,
+footer textarea {
+  background-color: #112040;
+  box-shadow: 0px 1px 0px #1e3050;
+  color: #c0d4f0;
+}
+
+footer input::placeholder,
+footer textarea::placeholder { color: #5a7090; }
+
+/* ---- Copyright ---- */
+.copiright {
+  background-color: #060f1e;
+  border-top: 1px solid #1e3050;
+}
+
+.copiright span { color: #5a7090; }
+
+/* ---- Nav Menu ---- */
+.flexnav li a { color: #d0e0f5; transition: color 0.25s; }
+.flexnav li a:hover,
+.flexnav .active { color: var(--gold) !important; }
+.flexnav ul { background: var(--navy-deep); border-top: 2px solid var(--gold); }
+.flexnav ul li a { color: #c0d4f0 !important; }
+.flexnav ul li a:hover { color: var(--gold) !important; background-color: rgba(201,162,39,0.08); }
+
+.button_flat_menu {
+  border-color: var(--gold);
+  color: var(--gold) !important;
+}
+
+.button_flat_menu:hover {
+  background-color: var(--gold);
+  color: var(--navy-deep) !important;
+}
+
+/* ---- Breadcrumbs ---- */
+.breadcrumbs { background-color: var(--bg-light); }
+.breadcrumbs span { color: var(--navy); }
+.breadcrumbs a { color: var(--text-muted); }
+
+/* ---- Tabs (team-member page) ---- */
+.nav-tabs > li.active > a,
+.nav-tabs > li.active > a:focus,
+.nav-tabs > li.active > a:hover {
+  background-color: var(--navy);
+  border-color: var(--navy);
+  color: #fff;
+}
+
+.nav-tabs { border-bottom: 3px solid var(--navy); }
+.nav-tabs li a { color: var(--text-muted); border-bottom: 3px solid var(--navy) !important; }
+
+/* ---- 404 Page ---- */
+.section-404 span { color: var(--gold); }
+
+/* ---- Team Section ---- */
+.team-section .team span { color: var(--gold-dark); }
+.team-section .team_bot {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-top: 1px solid var(--gold);
+}
+.team-section .team:hover .team_up { background-color: var(--navy-light); }
+.team-section .team:hover .team_bot { background: var(--navy-deep); }
+
+/* ---- Team Member ---- */
+.team-member-section .team span { color: var(--gold-dark); }
+.team-member-section .team_bot {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+  border-top: 1px solid var(--gold);
+}
+.team-member-section .team:hover .team_up { background-color: var(--navy-light); }
+.team-member-section .team:hover .team_bot { background: var(--navy-deep); }
+.client_info .sh_info_img span { color: var(--gold-dark); }
+
+/* ---- Blog ---- */
+.top-posts-section span { color: var(--gold-dark); }
+.post .post-cat a { color: var(--gold-dark); }
+.post-bar4 { background-color: var(--navy); }
+.post-quote { border-left: 5px solid var(--gold); }
+.post-quote-ins span { color: var(--gold-dark); }
+.status span { color: var(--gold-dark); }
+.date_author { color: var(--navy-light) !important; }
+
+/* ---- Sidebar ---- */
+.in-touch1 { background: linear-gradient(135deg, #1565c0 0%, var(--navy) 100%); }
+.in-touch2 { background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy-light) 100%); }
+.in-touch3 { background: linear-gradient(135deg, #c62828 0%, #8b0000 100%); }
+.recent-date { color: var(--gold-dark); }
+
+/* ---- Clients ---- */
+.clients-section .clients_blocks span { color: var(--gold-dark); }
+
+/* ---- Comments ---- */
+.comment-author span { color: var(--navy-light); }
+.p-n-pagination span { color: var(--gold-dark); }
+
+/* ---- Typography ---- */
+.typography-section .whois { color: var(--gold-dark); }
+.ordered_ol li:before { color: var(--gold-dark); }
+
+/* ---- Slider Text ---- */
+.slide_light_text { color: #c8d8f0; }
+.slide_middle_text { color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+
+/* ---- Decorative Separator ---- */
+.offer-section-heading::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+  margin: 16px auto 0;
+  border-radius: 2px;
+}
+
+/* ---- Card Hover Effects ---- */
+.offers {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 4px;
+  padding: 18px;
+}
+
+.offers:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(10,25,47,0.08);
+}
+
+/* ---- Form Inputs ---- */
+.contact_us_form input,
+.contact_us_form textarea {
+  background-color: var(--bg-light);
+  box-shadow: 0px -2px 0px #b8cce0;
+  border: 1px solid #d0dcea;
+  transition: border-color 0.25s;
+}
+
+.contact_us_form input:focus,
+.contact_us_form textarea:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+/* ---- Scroll-based nav highlight ---- */
+.fixblock.affix {
+  background: rgba(10,25,47,0.97) !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(6px);
+}
