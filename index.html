@@ -132,7 +132,10 @@
   .p{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:pfloat linear infinite}
   @keyframes pfloat{0%{transform:translateY(100vh);opacity:0}10%{opacity:.5}90%{opacity:.5}100%{transform:translateY(-10px);opacity:0}}
 
-  .hero-content{position:relative;z-index:2}
+  /* hero inner grid */
+  .hero-inner{display:grid;grid-template-columns:1fr;gap:40px;position:relative;z-index:2;width:100%}
+
+  .hero-content{}
   .hero-badge{
     display:inline-flex;align-items:center;gap:7px;
     background:rgba(212,168,67,.12);border:1px solid rgba(212,168,67,.28);
@@ -160,9 +163,58 @@
   .hero-btns{display:flex;flex-direction:column;gap:12px;opacity:0;animation:fadeup .7s ease .65s forwards}
   .hero-btns .btn{width:100%}
   @keyframes fadeup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-  .hero-stats{display:flex;gap:24px;margin-top:36px;flex-wrap:wrap;opacity:0;animation:fadeup .7s ease .8s forwards}
+  .hero-stats{display:flex;gap:20px;margin-top:32px;flex-wrap:wrap;opacity:0;animation:fadeup .7s ease .8s forwards;padding-top:24px;border-top:1px solid rgba(255,255,255,.07)}
   .hstat strong{display:block;font-size:26px;font-weight:800;color:var(--gold);line-height:1}
   .hstat span{font-size:11px;color:rgba(255,255,255,.45);letter-spacing:.5px}
+
+  /* hero right visual panel */
+  .hero-visual{opacity:0;animation:fadeup .8s ease .9s forwards}
+  .hv-card{
+    background:rgba(255,255,255,.05);
+    border:1px solid rgba(212,168,67,.2);
+    border-radius:20px;padding:24px 22px;
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    animation:hvcardFloat 5s ease-in-out infinite;
+    box-shadow:0 20px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(212,168,67,.1)
+  }
+  @keyframes hvcardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  .hv-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid rgba(212,168,67,.15)}
+  .hv-title{font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff}
+  .hv-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;animation:blink 2s infinite;box-shadow:0 0 8px var(--gold)}
+  .hv-item{
+    display:flex;align-items:center;gap:12px;
+    padding:10px 12px;border-radius:10px;
+    margin-bottom:6px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.04);
+    transition:var(--tr);cursor:pointer;
+    text-decoration:none
+  }
+  .hv-item:hover{background:rgba(212,168,67,.1);border-color:rgba(212,168,67,.25);transform:translateX(4px)}
+  .hv-icon{
+    width:36px;height:36px;flex-shrink:0;
+    background:linear-gradient(135deg,rgba(212,168,67,.18),rgba(212,168,67,.06));
+    border-radius:9px;display:flex;align-items:center;justify-content:center;
+    font-size:14px;color:var(--gold)
+  }
+  .hv-text strong{display:block;font-size:12px;font-weight:700;color:#fff;line-height:1.2}
+  .hv-text span{font-size:10px;color:rgba(255,255,255,.4)}
+  .hv-arr{margin-left:auto;font-size:10px;color:rgba(212,168,67,.4)}
+  .hv-footer{margin-top:16px;padding-top:14px;border-top:1px solid rgba(212,168,67,.12);display:flex;align-items:center;gap:10px}
+  .hv-wa{
+    flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+    background:linear-gradient(135deg,#25d366,#1da851);
+    color:#fff;font-size:11px;font-weight:700;letter-spacing:.5px;
+    padding:10px 14px;border-radius:9px;transition:var(--tr)
+  }
+  .hv-wa:hover{transform:scale(1.03);box-shadow:0 4px 16px rgba(37,211,102,.35)}
+  .hv-cert{display:flex;gap:6px}
+  .cert-badge{
+    padding:6px 9px;border-radius:7px;
+    background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.2);
+    font-size:9px;font-weight:800;color:var(--gold);letter-spacing:.5px;text-align:center;line-height:1.3
+  }
+
   .scroll-down{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:2;text-align:center}
   .scroll-down span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);display:block;margin-bottom:6px}
   .scroll-dot{width:26px;height:42px;border:1.5px solid rgba(212,168,67,.35);border-radius:13px;margin:0 auto;display:flex;align-items:flex-start;justify-content:center;padding-top:5px}
@@ -329,6 +381,7 @@
     .hstat strong{font-size:24px}
     .hstat span{font-size:10px}
     .scroll-down{display:none}
+    .hv-card{animation:none}
     .stats-grid{grid-template-columns:1fr 1fr;gap:20px}
     .stat-num{font-size:32px}
     .stat-icon{font-size:24px}
@@ -404,6 +457,9 @@
     #nav{top:38px;padding:14px 0}
     #nav.scrolled{top:0}
     #hero{padding:140px 0 80px;align-items:center;min-height:100svh}
+    .hero-inner{grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    .hero-btns{flex-direction:row}
+    .hero-btns .btn{width:auto}
     .nav-links{display:flex;flex-direction:row;position:static;background:none;border:none;padding:0;gap:24px}
     .nav-links a{padding:0;border:none;font-size:13px;color:rgba(255,255,255,.8)}
     .nav-links a:hover{color:var(--gold);padding-left:0}
@@ -430,6 +486,7 @@
     .section{padding:90px 0}
     .title{font-size:42px}
     .hero-title{font-size:58px}
+    .hero-inner{grid-template-columns:1fr 1fr;gap:60px}
     .srv-grid{grid-template-columns:repeat(3,1fr);gap:24px}
     .srv-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(11,26,46,.13);border-color:rgba(212,168,67,.2)}
     .srv-card:hover::before{transform:scaleX(1)}
@@ -517,23 +574,85 @@
   <div class="grid-bg"></div>
   <div class="particles" id="pts"></div>
   <div class="container">
-    <div class="hero-content">
-      <div class="hero-badge"><i class="fa fa-circle-check"></i>Trusted Since 2017 · CBDT &amp; GST Certified</div>
-      <h1 class="hero-title">
-        <span class="hero-line">Expert Tax &amp;</span>
-        <span class="hero-line"><span class="hl">Financial</span></span>
-        <span class="hero-line">Consultancy</span>
-      </h1>
-      <p class="hero-sub">Income Tax · GST · MSME · Company Registration · Accounting — We handle your finances so you can grow your business.</p>
-      <div class="hero-btns">
-        <a href="#contact" class="btn btn-gold"><i class="fa fa-paper-plane"></i>Free Consultation</a>
-        <a href="#services" class="btn btn-outline"><i class="fa fa-list"></i>Our Services</a>
+    <div class="hero-inner">
+
+      <!-- LEFT: Text Content -->
+      <div class="hero-content">
+        <div class="hero-badge"><i class="fa fa-circle-check"></i>Trusted Since 2017 · CBDT &amp; GST Certified</div>
+        <h1 class="hero-title">
+          <span class="hero-line">Expert Tax &amp;</span>
+          <span class="hero-line"><span class="hl">Financial</span></span>
+          <span class="hero-line">Consultancy</span>
+        </h1>
+        <p class="hero-sub">ITR Filing · GST · MSME · Company Registration · Book Keeping — Aapka tax hum sambhaalte hain, aap apna business badhao.</p>
+        <div class="hero-btns">
+          <a href="#contact" class="btn btn-gold"><i class="fa fa-paper-plane"></i>Free Consultation</a>
+          <a href="https://wa.me/917417387837" target="_blank" class="btn btn-outline"><i class="fab fa-whatsapp"></i>WhatsApp Now</a>
+        </div>
+        <div class="hero-stats">
+          <div class="hstat"><strong>7+</strong><span>Saal Ka Anubhav</span></div>
+          <div class="hstat"><strong>500+</strong><span>Khush Clients</span></div>
+          <div class="hstat"><strong>2000+</strong><span>Returns Filed</span></div>
+          <div class="hstat"><strong>99%</strong><span>Success Rate</span></div>
+        </div>
       </div>
-      <div class="hero-stats">
-        <div class="hstat"><strong>7+</strong><span>Years</span></div>
-        <div class="hstat"><strong>500+</strong><span>Clients</span></div>
-        <div class="hstat"><strong>99%</strong><span>Success</span></div>
+
+      <!-- RIGHT: Services Card -->
+      <div class="hero-visual">
+        <div class="hv-card">
+          <div class="hv-header">
+            <div class="hv-title"><i class="fa fa-layer-group" style="color:var(--gold);margin-right:7px"></i>Hamaari Services</div>
+            <div class="hv-dot"></div>
+          </div>
+
+          <a href="#services" class="hv-item">
+            <div class="hv-icon"><i class="fa fa-file-invoice-dollar"></i></div>
+            <div class="hv-text"><strong>Income Tax Return (ITR)</strong><span>ITR-1 se ITR-7 · Fast Filing · Max Refund</span></div>
+            <i class="fa fa-chevron-right hv-arr"></i>
+          </a>
+          <a href="#services" class="hv-item">
+            <div class="hv-icon"><i class="fa fa-registered"></i></div>
+            <div class="hv-text"><strong>GST Registration</strong><span>Quick Registration · All Documents Handle</span></div>
+            <i class="fa fa-chevron-right hv-arr"></i>
+          </a>
+          <a href="#services" class="hv-item">
+            <div class="hv-icon"><i class="fa fa-file-circle-check"></i></div>
+            <div class="hv-text"><strong>GST Returns</strong><span>GSTR-1, 3B, 9 · Zero Penalty Guarantee</span></div>
+            <i class="fa fa-chevron-right hv-arr"></i>
+          </a>
+          <a href="#services" class="hv-item">
+            <div class="hv-icon"><i class="fa fa-industry"></i></div>
+            <div class="hv-text"><strong>MSME / Udyam Registration</strong><span>Instant Certificate · Govt Benefits Unlock</span></div>
+            <i class="fa fa-chevron-right hv-arr"></i>
+          </a>
+          <a href="#services" class="hv-item">
+            <div class="hv-icon"><i class="fa fa-chart-line"></i></div>
+            <div class="hv-text"><strong>Tax Planning</strong><span>Sec 80C/80D · Legal Tax Saving Strategy</span></div>
+            <i class="fa fa-chevron-right hv-arr"></i>
+          </a>
+          <a href="#services" class="hv-item">
+            <div class="hv-icon"><i class="fa fa-book-open"></i></div>
+            <div class="hv-text"><strong>Accounts &amp; Book Keeping</strong><span>P&amp;L · Balance Sheet · Monthly MIS</span></div>
+            <i class="fa fa-chevron-right hv-arr"></i>
+          </a>
+          <a href="#services" class="hv-item">
+            <div class="hv-icon"><i class="fa fa-building-columns"></i></div>
+            <div class="hv-text"><strong>Company Incorporation</strong><span>Pvt Ltd · LLP · OPC · MCA Compliance</span></div>
+            <i class="fa fa-chevron-right hv-arr"></i>
+          </a>
+
+          <div class="hv-footer">
+            <a href="https://wa.me/917417387837" target="_blank" class="hv-wa">
+              <i class="fab fa-whatsapp"></i>WhatsApp Pe Puchho — Free
+            </a>
+            <div class="hv-cert">
+              <div class="cert-badge">CBDT<br>✓</div>
+              <div class="cert-badge">GST<br>✓</div>
+            </div>
+          </div>
+        </div>
       </div>
+
     </div>
   </div>
   <div class="scroll-down"><span>Scroll</span><div class="scroll-dot"></div></div>
