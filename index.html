@@ -1313,6 +1313,11 @@
       (msg ? '💬 *Message:* ' + msg + '\n' : '') +
       '\n_Sent via website contact form_';
 
+    var fd = new FormData();
+    fd.append('name', name); fd.append('phone', phone);
+    fd.append('email', email); fd.append('service', service); fd.append('message', msg);
+    fetch('admin/save_query.php', {method:'POST', body:fd}).catch(function(){});
+
     var waUrl = 'https://wa.me/917417387837?text=' + encodeURIComponent(text);
     window.open(waUrl, '_blank');
 
