@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Dashboard – Thakurji Associates</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Poppins',sans-serif;background:#f4f7fc;min-height:100vh}
+.sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:#0b1a2e;padding:24px 14px;display:flex;flex-direction:column;gap:4px;z-index:10}
+.s-logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:28px}
+.s-logo-icon{width:38px;height:38px;background:#d4a843;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#0b1a2e;flex-shrink:0}
+.s-logo-text{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+.s-logo-text small{display:block;font-size:9px;color:#d4a843;letter-spacing:.5px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;transition:.15s}
+.nav-item.active,.nav-item:hover{background:rgba(212,168,67,.12);color:#d4a843}
+.nav-item i{width:18px;text-align:center;font-size:14px}
+.logout{margin-top:auto}
+.logout:hover{background:rgba(255,80,80,.1) !important;color:#f87171 !important}
+.main{margin-left:220px;padding:32px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
+.topbar h1{font-size:20px;font-weight:700;color:#0b1a2e}
+.total-badge{background:#d4a843;color:#0b1a2e;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-left:8px}
+.topbar-right{font-size:13px;color:#7a8fa8;display:flex;align-items:center;gap:8px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.stat{background:#fff;border-radius:12px;padding:20px 22px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.stat .ico{font-size:22px;color:#d4a843;margin-bottom:8px}
+.stat .num{font-size:28px;font-weight:800;color:#0b1a2e}
+.stat .lbl{font-size:12px;color:#7a8fa8;margin-top:2px}
+.search-bar{background:#fff;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.search-bar i{color:#7a8fa8;font-size:14px}
+.search-bar input{border:none;outline:none;font-size:14px;font-family:'Poppins',sans-serif;color:#0b1a2e;flex:1;background:none}
+.table-wrap{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
+.t-head{display:grid;grid-template-columns:180px 150px 1fr 170px 130px;gap:12px;padding:13px 20px;background:#f8fafc;font-size:11px;font-weight:700;color:#7a8fa8;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e8edf3}
+.t-row{display:grid;grid-template-columns:180px 150px 1fr 170px 130px;gap:12px;padding:16px 20px;border-bottom:1px solid #f0f4f8;align-items:start;transition:.15s}
+.t-row:last-child{border-bottom:none}
+.t-row:hover{background:#fafbfd}
+.c-name{font-size:14px;font-weight:600;color:#0b1a2e}
+.c-name small{display:block;font-size:11px;font-weight:400;color:#7a8fa8;margin-top:2px;word-break:break-all}
+.c-phone{font-size:13px}
+.c-phone a{color:#0b1a2e;text-decoration:none;font-weight:500}
+.c-phone a:hover{color:#d4a843}
+.wa-btn{display:inline-flex;align-items:center;gap:5px;background:#25d366;color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;text-decoration:none;margin-top:7px;transition:.15s}
+.wa-btn:hover{background:#1dbb57}
+.c-msg{font-size:12px;color:#7a8fa8;line-height:1.5}
+.tag{display:inline-block;background:rgba(212,168,67,.12);color:#a8831f;font-size:11px;font-weight:600;padding:4px 9px;border-radius:6px}
+.c-time{font-size:11px;color:#7a8fa8;line-height:1.6}
+.empty{text-align:center;padding:64px 20px;color:#7a8fa8}
+.empty i{font-size:40px;color:#d4a84366;margin-bottom:14px;display:block}
+.empty p{font-size:14px}
+.del-btn{background:none;border:none;color:#fca5a5;cursor:pointer;font-size:12px;margin-top:6px;padding:0;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:4px}
+.del-btn:hover{color:#ef4444}
+@media(max-width:960px){
+  .sidebar{width:56px;padding:16px 8px}
+  .s-logo-text,.nav-item span{display:none}
+  .s-logo{justify-content:center;padding:0}
+  .main{margin-left:56px;padding:20px 14px}
+  .stats{grid-template-columns:1fr 1fr}
+  .t-head,.t-row{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="s-logo">
+    <div class="s-logo-icon">T</div>
+    <div class="s-logo-text">Thakurji<br>Associates<small>Admin</small></div>
+  </div>
+  <a class="nav-item active" href="#"><i class="fa fa-inbox"></i><span>Queries</span></a>
+  <a class="nav-item" href="../index.html" target="_blank"><i class="fa fa-globe"></i><span>View Website</span></a>
+  <a class="nav-item logout" href="#" onclick="logout()"><i class="fa fa-right-from-bracket"></i><span>Logout</span></a>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <h1>Client Queries <span class="total-badge" id="totalBadge">0</span></h1>
+    <div class="topbar-right"><i class="fa fa-calendar"></i><span id="todayDate"></span></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="ico"><i class="fa fa-inbox"></i></div><div class="num" id="statTotal">0</div><div class="lbl">Total Queries</div></div>
+    <div class="stat"><div class="ico"><i class="fa fa-calendar-day"></i></div><div class="num" id="statToday">0</div><div class="lbl">Today</div></div>
+    <div class="stat"><div class="ico"><i class="fab fa-whatsapp"></i></div><div class="num" id="statWa">0</div><div class="lbl">WhatsApp Sent</div></div>
+  </div>
+
+  <div class="search-bar">
+    <i class="fa fa-magnifying-glass"></i>
+    <input type="text" id="search" placeholder="Search by name, phone, or service…" oninput="render()"/>
+  </div>
+
+  <div class="table-wrap" id="tableWrap">
+    <div class="empty"><i class="fa fa-inbox"></i><p>No queries yet.</p></div>
+  </div>
+</div>
+
+<script>
+// Auth guard
+if(sessionStorage.getItem('ta_admin')!=='1') location.href='index.html';
+
+function logout(){ sessionStorage.removeItem('ta_admin'); location.href='index.html'; }
+
+function getQueries(){ return JSON.parse(localStorage.getItem('ta_queries')||'[]'); }
+function saveQueries(q){ localStorage.setItem('ta_queries', JSON.stringify(q)); }
+
+function delQuery(id){
+  if(!confirm('Delete this query?')) return;
+  var q = getQueries().filter(function(x){ return x.id!==id; });
+  saveQueries(q);
+  render();
+}
+
+var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+document.getElementById('todayDate').textContent = today;
+
+function render(){
+  var q = getQueries();
+  var search = document.getElementById('search').value.toLowerCase();
+  var filtered = search ? q.filter(function(x){
+    return (x.name+x.phone+(x.service||'')).toLowerCase().includes(search);
+  }) : q;
+
+  document.getElementById('totalBadge').textContent = q.length;
+  document.getElementById('statTotal').textContent  = q.length;
+  document.getElementById('statWa').textContent     = q.length;
+
+  var todayStr = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  var todayCount = q.filter(function(x){ return (x.time||'').includes(todayStr); }).length;
+  document.getElementById('statToday').textContent = todayCount;
+
+  var wrap = document.getElementById('tableWrap');
+  if(filtered.length===0){
+    wrap.innerHTML='<div class="empty"><i class="fa fa-inbox"></i><p>'+(search?'No results found.':'No queries yet. They will appear here when someone fills the contact form.')+'</p></div>';
+    return;
+  }
+
+  var html = '<div class="t-head"><div>Client</div><div>Phone</div><div>Message</div><div>Service</div><div>Time</div></div>';
+  filtered.slice().reverse().forEach(function(x){
+    var waNum = (x.phone||'').replace(/\D/g,'');
+    if(waNum.length===10) waNum='91'+waNum;
+    var waLink = 'https://wa.me/'+waNum;
+    html += '<div class="t-row" data-id="'+x.id+'">'
+      +'<div class="c-name">'+esc(x.name)+(x.email?'<small>'+esc(x.email)+'</small>':'')+'</div>'
+      +'<div class="c-phone"><a href="tel:'+esc(x.phone)+'">'+esc(x.phone)+'</a>'
+      +'<br><a class="wa-btn" href="'+waLink+'" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>'
+      +'<div class="c-msg">'+(x.message?esc(x.message):'<em>—</em>')+'</div>'
+      +'<div><span class="tag">'+(x.service?esc(x.service):'Not specified')+'</span></div>'
+      +'<div class="c-time">'+esc(x.time||'')
+      +'<br><button class="del-btn" onclick="delQuery(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></div>'
+      +'</div>';
+  });
+  wrap.innerHTML = html;
+}
+
+function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+
+render();
+</script>
+</body>
+</html>

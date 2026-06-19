@@ -1313,6 +1313,15 @@
       (msg ? '💬 *Message:* ' + msg + '\n' : '') +
       '\n_Sent via website contact form_';
 
+    // Save to localStorage (for admin dashboard)
+    var queries = JSON.parse(localStorage.getItem('ta_queries')||'[]');
+    queries.push({
+      id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
+      name:name, phone:phone, email:email, service:service, message:msg,
+      time: new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+    });
+    localStorage.setItem('ta_queries', JSON.stringify(queries));
+    // Also save via PHP on live server
     var fd = new FormData();
     fd.append('name', name); fd.append('phone', phone);
     fd.append('email', email); fd.append('service', service); fd.append('message', msg);
