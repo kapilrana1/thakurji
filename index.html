@@ -1152,13 +1152,13 @@
         <p>Tell us your requirement and we'll get back with a customized plan.</p>
         <form id="cForm" onsubmit="submitForm(event)">
           <div class="form-row">
-            <div class="fg"><label>Your Name</label><input type="text" placeholder="Full Name" required/></div>
-            <div class="fg"><label>Phone</label><input type="tel" placeholder="+91 XXXXX XXXXX" required/></div>
+            <div class="fg"><label>Your Name</label><input id="cf-name" type="text" placeholder="Full Name" required/></div>
+            <div class="fg"><label>Phone</label><input id="cf-phone" type="tel" placeholder="+91 XXXXX XXXXX" required/></div>
           </div>
-          <div class="fg"><label>Email</label><input type="email" placeholder="email@example.com"/></div>
+          <div class="fg"><label>Email</label><input id="cf-email" type="email" placeholder="email@example.com"/></div>
           <div class="fg">
             <label>Service Required</label>
-            <select required>
+            <select id="cf-service" required>
               <option value="" disabled selected>Select a Service</option>
               <option>Income Tax Return (ITR)</option>
               <option>GST Registration</option>
@@ -1170,8 +1170,8 @@
               <option>Other / Multiple Services</option>
             </select>
           </div>
-          <div class="fg"><label>Message</label><textarea placeholder="Tell us more about your requirement..."></textarea></div>
-          <button type="submit" class="btn btn-gold btn-submit"><i class="fa fa-paper-plane"></i>Send Message</button>
+          <div class="fg"><label>Message</label><textarea id="cf-msg" placeholder="Tell us more about your requirement..."></textarea></div>
+          <button type="submit" class="btn btn-gold btn-submit"><i class="fab fa-whatsapp"></i> Send on WhatsApp</button>
         </form>
         <div id="formMsg"><i class="fa fa-circle-check"></i> Message sent! We'll contact you within 24 hours.</div>
       </div>
@@ -1296,13 +1296,26 @@
   // Form
   function submitForm(e){
     e.preventDefault();
-    var btn=e.target.querySelector('button[type=submit]');
-    btn.innerHTML='<i class="fa fa-spinner fa-spin"></i> Sending...';
-    btn.disabled=true;
-    setTimeout(function(){
-      btn.style.display='none';
-      document.getElementById('formMsg').style.display='block';
-    },1600);
+    var name    = document.getElementById('cf-name').value.trim();
+    var phone   = document.getElementById('cf-phone').value.trim();
+    var email   = document.getElementById('cf-email').value.trim();
+    var service = document.getElementById('cf-service').value.trim();
+    var msg     = document.getElementById('cf-msg').value.trim();
+
+    var text =
+      '🙏 *New Enquiry – Thakurji Associates*\n\n' +
+      '👤 *Name:* ' + name + '\n' +
+      '📞 *Phone:* ' + phone + '\n' +
+      (email ? '📧 *Email:* ' + email + '\n' : '') +
+      '📋 *Service:* ' + service + '\n' +
+      (msg ? '💬 *Message:* ' + msg + '\n' : '') +
+      '\n_Sent via website contact form_';
+
+    var waUrl = 'https://wa.me/917417387837?text=' + encodeURIComponent(text);
+    window.open(waUrl, '_blank');
+
+    document.getElementById('formMsg').style.display='block';
+    e.target.reset();
   }
 
   // ── LEFT HERO TEXT SLIDES ──────────────────────
