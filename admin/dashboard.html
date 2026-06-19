@@ -9,155 +9,286 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Poppins',sans-serif;background:#f4f7fc;min-height:100vh}
-.sidebar{position:fixed;top:0;left:0;width:220px;height:100vh;background:#0b1a2e;padding:24px 14px;display:flex;flex-direction:column;gap:4px;z-index:10}
-.s-logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:28px}
-.s-logo-icon{width:38px;height:38px;background:#d4a843;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#0b1a2e;flex-shrink:0}
-.s-logo-text{font-size:12px;font-weight:700;color:#fff;line-height:1.3}
+body{font-family:'Poppins',sans-serif;background:#f0f4f8;min-height:100vh}
+
+/* ── Sidebar ── */
+.sidebar{position:fixed;top:0;left:0;width:210px;height:100vh;background:#0b1a2e;padding:20px 12px;display:flex;flex-direction:column;gap:3px;z-index:10}
+.s-logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:24px}
+.s-logo-icon{width:36px;height:36px;background:#d4a843;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#0b1a2e;flex-shrink:0}
+.s-logo-text{font-size:11.5px;font-weight:700;color:#fff;line-height:1.3}
 .s-logo-text small{display:block;font-size:9px;color:#d4a843;letter-spacing:.5px;text-transform:uppercase}
-.nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;color:rgba(255,255,255,.6);font-size:13px;font-weight:500;cursor:pointer;text-decoration:none;transition:.15s}
+.nav-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:7px;color:rgba(255,255,255,.55);font-size:12.5px;font-weight:500;cursor:pointer;text-decoration:none;transition:.15s}
 .nav-item.active,.nav-item:hover{background:rgba(212,168,67,.12);color:#d4a843}
-.nav-item i{width:18px;text-align:center;font-size:14px}
+.nav-item i{width:16px;text-align:center;font-size:13px}
 .logout{margin-top:auto}
-.logout:hover{background:rgba(255,80,80,.1) !important;color:#f87171 !important}
-.main{margin-left:220px;padding:32px}
-.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px}
-.topbar h1{font-size:20px;font-weight:700;color:#0b1a2e}
-.total-badge{background:#d4a843;color:#0b1a2e;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;margin-left:8px}
-.topbar-right{font-size:13px;color:#7a8fa8;display:flex;align-items:center;gap:8px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
-.stat{background:#fff;border-radius:12px;padding:20px 22px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
-.stat .ico{font-size:22px;color:#d4a843;margin-bottom:8px}
-.stat .num{font-size:28px;font-weight:800;color:#0b1a2e}
-.stat .lbl{font-size:12px;color:#7a8fa8;margin-top:2px}
-.search-bar{background:#fff;border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
-.search-bar i{color:#7a8fa8;font-size:14px}
-.search-bar input{border:none;outline:none;font-size:14px;font-family:'Poppins',sans-serif;color:#0b1a2e;flex:1;background:none}
-.table-wrap{background:#fff;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow:hidden}
-.t-head{display:grid;grid-template-columns:180px 150px 1fr 170px 130px;gap:12px;padding:13px 20px;background:#f8fafc;font-size:11px;font-weight:700;color:#7a8fa8;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e8edf3}
-.t-row{display:grid;grid-template-columns:180px 150px 1fr 170px 130px;gap:12px;padding:16px 20px;border-bottom:1px solid #f0f4f8;align-items:start;transition:.15s}
-.t-row:last-child{border-bottom:none}
-.t-row:hover{background:#fafbfd}
-.c-name{font-size:14px;font-weight:600;color:#0b1a2e}
-.c-name small{display:block;font-size:11px;font-weight:400;color:#7a8fa8;margin-top:2px;word-break:break-all}
-.c-phone{font-size:13px}
-.c-phone a{color:#0b1a2e;text-decoration:none;font-weight:500}
-.c-phone a:hover{color:#d4a843}
-.wa-btn{display:inline-flex;align-items:center;gap:5px;background:#25d366;color:#fff;font-size:11px;font-weight:600;padding:5px 10px;border-radius:6px;text-decoration:none;margin-top:7px;transition:.15s}
+.logout:hover{background:rgba(255,80,80,.1)!important;color:#f87171!important}
+
+/* ── Main ── */
+.main{margin-left:210px;padding:24px 28px}
+
+/* ── Header bar ── */
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.header h1{font-size:18px;font-weight:700;color:#0b1a2e;display:flex;align-items:center;gap:8px}
+.badge{background:#d4a843;color:#0b1a2e;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px}
+.header-right{display:flex;align-items:center;gap:8px}
+.btn-export{display:flex;align-items:center;gap:6px;background:#1d6f42;color:#fff;border:none;padding:8px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:.15s}
+.btn-export:hover{background:#155c36}
+.btn-clear{display:flex;align-items:center;gap:6px;background:#fff;color:#e74c3c;border:1.5px solid #fca5a5;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;transition:.15s}
+.btn-clear:hover{background:#fff5f5}
+
+/* ── Stats ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid #d4a843}
+.stat .num{font-size:26px;font-weight:800;color:#0b1a2e}
+.stat .lbl{font-size:11px;color:#7a8fa8;margin-top:2px;font-weight:500}
+
+/* ── Filter Bar ── */
+.filter-bar{background:#fff;border-radius:10px;padding:14px 18px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.filter-bar label{font-size:11px;font-weight:700;color:#7a8fa8;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.filter-bar input,.filter-bar select{border:1.5px solid #e2e8f0;border-radius:7px;padding:7px 11px;font-size:12.5px;font-family:'Poppins',sans-serif;color:#0b1a2e;outline:none;transition:.2s;background:#fff}
+.filter-bar input:focus,.filter-bar select:focus{border-color:#d4a843}
+.filter-bar input[type=text]{flex:1;min-width:160px}
+.filter-bar input[type=date]{min-width:130px}
+.filter-bar select{min-width:160px}
+.btn-reset{background:none;border:1.5px solid #e2e8f0;color:#7a8fa8;padding:7px 13px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:.15s}
+.btn-reset:hover{border-color:#d4a843;color:#d4a843}
+.divider{width:1px;height:28px;background:#e2e8f0}
+
+/* ── Excel Table ── */
+.tbl-wrap{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:820px}
+thead tr{background:#0b1a2e}
+thead th{color:#d4a843;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:12px 14px;text-align:left;white-space:nowrap;border-right:1px solid rgba(255,255,255,.08);cursor:pointer;user-select:none;transition:.15s}
+thead th:last-child{border-right:none}
+thead th:hover{background:#112240}
+thead th .sort-icon{margin-left:4px;opacity:.4;font-size:10px}
+thead th.sorted .sort-icon{opacity:1;color:#fff}
+tbody tr{border-bottom:1px solid #f0f4f8;transition:.1s}
+tbody tr:nth-child(even){background:#fafbfd}
+tbody tr:hover{background:#fff8e6}
+td{padding:11px 14px;vertical-align:top;border-right:1px solid #f0f4f8;color:#1e2d40}
+td:last-child{border-right:none}
+.td-num{color:#7a8fa8;font-size:11px;font-weight:700;text-align:center}
+.td-name{font-weight:600;color:#0b1a2e;white-space:nowrap}
+.td-email{font-size:11px;color:#7a8fa8;margin-top:2px}
+.td-phone a{color:#0b1a2e;text-decoration:none;font-weight:500;white-space:nowrap}
+.td-phone a:hover{color:#d4a843}
+.tag{display:inline-block;background:rgba(212,168,67,.12);color:#a8831f;font-size:11px;font-weight:600;padding:3px 8px;border-radius:5px;white-space:nowrap}
+.td-msg{font-size:12px;color:#7a8fa8;max-width:200px;line-height:1.5}
+.td-time{font-size:11px;color:#7a8fa8;white-space:nowrap}
+.wa-btn{display:inline-flex;align-items:center;gap:4px;background:#25d366;color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:5px;text-decoration:none;margin-top:5px;white-space:nowrap;transition:.15s}
 .wa-btn:hover{background:#1dbb57}
-.c-msg{font-size:12px;color:#7a8fa8;line-height:1.5}
-.tag{display:inline-block;background:rgba(212,168,67,.12);color:#a8831f;font-size:11px;font-weight:600;padding:4px 9px;border-radius:6px}
-.c-time{font-size:11px;color:#7a8fa8;line-height:1.6}
-.empty{text-align:center;padding:64px 20px;color:#7a8fa8}
-.empty i{font-size:40px;color:#d4a84366;margin-bottom:14px;display:block}
-.empty p{font-size:14px}
-.del-btn{background:none;border:none;color:#fca5a5;cursor:pointer;font-size:12px;margin-top:6px;padding:0;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:4px}
+.del-btn{background:none;border:none;color:#fca5a5;cursor:pointer;font-size:11px;margin-top:4px;padding:0;font-family:'Poppins',sans-serif;display:flex;align-items:center;gap:3px;transition:.15s}
 .del-btn:hover{color:#ef4444}
-@media(max-width:960px){
-  .sidebar{width:56px;padding:16px 8px}
+.empty-row td{text-align:center;padding:50px;color:#7a8fa8;font-size:13px}
+.empty-row td i{display:block;font-size:32px;color:#d4a84355;margin-bottom:10px}
+.count-info{font-size:12px;color:#7a8fa8;padding:10px 14px;border-top:1px solid #f0f4f8}
+@media(max-width:900px){
+  .sidebar{width:52px;padding:14px 8px}
   .s-logo-text,.nav-item span{display:none}
   .s-logo{justify-content:center;padding:0}
-  .main{margin-left:56px;padding:20px 14px}
+  .main{margin-left:52px;padding:16px 12px}
   .stats{grid-template-columns:1fr 1fr}
-  .t-head,.t-row{grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
 
+<!-- Sidebar -->
 <div class="sidebar">
   <div class="s-logo">
     <div class="s-logo-icon">T</div>
     <div class="s-logo-text">Thakurji<br>Associates<small>Admin</small></div>
   </div>
-  <a class="nav-item active" href="#"><i class="fa fa-inbox"></i><span>Queries</span></a>
+  <a class="nav-item active" href="#"><i class="fa fa-table"></i><span>Queries</span></a>
   <a class="nav-item" href="../index.html" target="_blank"><i class="fa fa-globe"></i><span>View Website</span></a>
   <a class="nav-item logout" href="#" onclick="logout()"><i class="fa fa-right-from-bracket"></i><span>Logout</span></a>
 </div>
 
+<!-- Main -->
 <div class="main">
-  <div class="topbar">
-    <h1>Client Queries <span class="total-badge" id="totalBadge">0</span></h1>
-    <div class="topbar-right"><i class="fa fa-calendar"></i><span id="todayDate"></span></div>
+
+  <!-- Header -->
+  <div class="header">
+    <h1><i class="fa fa-table" style="color:#d4a843;font-size:16px"></i> Client Queries <span class="badge" id="totalBadge">0</span></h1>
+    <div class="header-right">
+      <button class="btn-export" onclick="exportCSV()"><i class="fa fa-file-excel"></i> Export Excel</button>
+      <button class="btn-clear" onclick="clearAll()"><i class="fa fa-trash"></i> Clear All</button>
+    </div>
   </div>
 
+  <!-- Stats -->
   <div class="stats">
-    <div class="stat"><div class="ico"><i class="fa fa-inbox"></i></div><div class="num" id="statTotal">0</div><div class="lbl">Total Queries</div></div>
-    <div class="stat"><div class="ico"><i class="fa fa-calendar-day"></i></div><div class="num" id="statToday">0</div><div class="lbl">Today</div></div>
-    <div class="stat"><div class="ico"><i class="fab fa-whatsapp"></i></div><div class="num" id="statWa">0</div><div class="lbl">WhatsApp Sent</div></div>
+    <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">📥 Total Queries</div></div>
+    <div class="stat"><div class="num" id="statToday">0</div><div class="lbl">📅 Today</div></div>
+    <div class="stat"><div class="num" id="statThis">0</div><div class="lbl">📆 This Month</div></div>
+    <div class="stat"><div class="num" id="statWa">0</div><div class="lbl">💬 WhatsApp Sent</div></div>
   </div>
 
-  <div class="search-bar">
-    <i class="fa fa-magnifying-glass"></i>
-    <input type="text" id="search" placeholder="Search by name, phone, or service…" oninput="render()"/>
+  <!-- Filter Bar -->
+  <div class="filter-bar">
+    <label><i class="fa fa-filter"></i> Filters</label>
+    <div class="divider"></div>
+    <input type="text" id="fSearch" placeholder="🔍  Search name / phone…" oninput="render()"/>
+    <select id="fService" onchange="render()">
+      <option value="">All Services</option>
+      <option>Income Tax Return (ITR)</option>
+      <option>GST Registration</option>
+      <option>GST Returns</option>
+      <option>MSME / Udyam Registration</option>
+      <option>Tax Planning</option>
+      <option>Accounts &amp; Book Keeping</option>
+      <option>Company Incorporation</option>
+      <option>Other / Multiple Services</option>
+    </select>
+    <label>From</label>
+    <input type="date" id="fFrom" onchange="render()"/>
+    <label>To</label>
+    <input type="date" id="fTo" onchange="render()"/>
+    <button class="btn-reset" onclick="resetFilters()"><i class="fa fa-rotate-left"></i> Reset</button>
   </div>
 
-  <div class="table-wrap" id="tableWrap">
-    <div class="empty"><i class="fa fa-inbox"></i><p>No queries yet.</p></div>
+  <!-- Table -->
+  <div class="tbl-wrap">
+    <table id="mainTable">
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th onclick="sortBy('name')">Client Name <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('phone')">Phone <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('email')">Email <span class="sort-icon">⇅</span></th>
+          <th onclick="sortBy('service')">Service <span class="sort-icon">⇅</span></th>
+          <th>Message</th>
+          <th onclick="sortBy('time')">Date &amp; Time <span class="sort-icon">⇅</span></th>
+          <th style="width:80px">Action</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="count-info" id="countInfo"></div>
   </div>
 </div>
 
 <script>
-// Auth guard
 if(sessionStorage.getItem('ta_admin')!=='1') location.href='index.html';
-
 function logout(){ sessionStorage.removeItem('ta_admin'); location.href='index.html'; }
 
-function getQueries(){ return JSON.parse(localStorage.getItem('ta_queries')||'[]'); }
-function saveQueries(q){ localStorage.setItem('ta_queries', JSON.stringify(q)); }
+var sortCol='time', sortDir=-1;
 
-function delQuery(id){
-  if(!confirm('Delete this query?')) return;
-  var q = getQueries().filter(function(x){ return x.id!==id; });
-  saveQueries(q);
+function getQ(){ return JSON.parse(localStorage.getItem('ta_queries')||'[]'); }
+function setQ(q){ localStorage.setItem('ta_queries', JSON.stringify(q)); }
+
+function resetFilters(){
+  document.getElementById('fSearch').value='';
+  document.getElementById('fService').value='';
+  document.getElementById('fFrom').value='';
+  document.getElementById('fTo').value='';
   render();
 }
 
-var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-document.getElementById('todayDate').textContent = today;
+function sortBy(col){
+  if(sortCol===col) sortDir*=-1; else { sortCol=col; sortDir=1; }
+  document.querySelectorAll('thead th').forEach(function(th){ th.classList.remove('sorted'); });
+  render();
+}
+
+function parseDate(str){
+  // str like "19 Jun 2026, 10:30 AM"
+  return new Date(str);
+}
 
 function render(){
-  var q = getQueries();
-  var search = document.getElementById('search').value.toLowerCase();
-  var filtered = search ? q.filter(function(x){
-    return (x.name+x.phone+(x.service||'')).toLowerCase().includes(search);
-  }) : q;
+  var all = getQ();
+  var search  = document.getElementById('fSearch').value.toLowerCase();
+  var service = document.getElementById('fService').value;
+  var from    = document.getElementById('fFrom').value;
+  var to      = document.getElementById('fTo').value;
 
-  document.getElementById('totalBadge').textContent = q.length;
-  document.getElementById('statTotal').textContent  = q.length;
-  document.getElementById('statWa').textContent     = q.length;
+  // Filter
+  var filtered = all.filter(function(x){
+    if(search && !(x.name+x.phone+(x.email||'')).toLowerCase().includes(search)) return false;
+    if(service && x.service !== service) return false;
+    if(from || to){
+      var d = new Date(parseDate(x.time));
+      if(from && d < new Date(from)) return false;
+      if(to   && d > new Date(to+'T23:59:59')) return false;
+    }
+    return true;
+  });
 
-  var todayStr = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-  var todayCount = q.filter(function(x){ return (x.time||'').includes(todayStr); }).length;
-  document.getElementById('statToday').textContent = todayCount;
+  // Sort
+  filtered.sort(function(a,b){
+    var av=a[sortCol]||'', bv=b[sortCol]||'';
+    return av<bv?-sortDir:av>bv?sortDir:0;
+  });
 
-  var wrap = document.getElementById('tableWrap');
+  // Stats
+  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  var thisMonth = new Date().toLocaleDateString('en-IN',{month:'short',year:'numeric'});
+  document.getElementById('totalBadge').textContent = all.length;
+  document.getElementById('statTotal').textContent  = all.length;
+  document.getElementById('statWa').textContent     = all.length;
+  document.getElementById('statToday').textContent  = all.filter(function(x){ return (x.time||'').startsWith(today); }).length;
+  document.getElementById('statThis').textContent   = all.filter(function(x){ return (x.time||'').includes(thisMonth); }).length;
+
+  var tbody = document.getElementById('tbody');
   if(filtered.length===0){
-    wrap.innerHTML='<div class="empty"><i class="fa fa-inbox"></i><p>'+(search?'No results found.':'No queries yet. They will appear here when someone fills the contact form.')+'</p></div>';
+    tbody.innerHTML='<tr class="empty-row"><td colspan="8"><i class="fa fa-inbox"></i>'+(search||service||from||to?'No results match your filters.':'No queries yet.')+'</td></tr>';
+    document.getElementById('countInfo').textContent='';
     return;
   }
 
-  var html = '<div class="t-head"><div>Client</div><div>Phone</div><div>Message</div><div>Service</div><div>Time</div></div>';
-  filtered.slice().reverse().forEach(function(x){
-    var waNum = (x.phone||'').replace(/\D/g,'');
+  var html='';
+  filtered.forEach(function(x,i){
+    var waNum=(x.phone||'').replace(/\D/g,'');
     if(waNum.length===10) waNum='91'+waNum;
-    var waLink = 'https://wa.me/'+waNum;
-    html += '<div class="t-row" data-id="'+x.id+'">'
-      +'<div class="c-name">'+esc(x.name)+(x.email?'<small>'+esc(x.email)+'</small>':'')+'</div>'
-      +'<div class="c-phone"><a href="tel:'+esc(x.phone)+'">'+esc(x.phone)+'</a>'
-      +'<br><a class="wa-btn" href="'+waLink+'" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a></div>'
-      +'<div class="c-msg">'+(x.message?esc(x.message):'<em>—</em>')+'</div>'
-      +'<div><span class="tag">'+(x.service?esc(x.service):'Not specified')+'</span></div>'
-      +'<div class="c-time">'+esc(x.time||'')
-      +'<br><button class="del-btn" onclick="delQuery(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></div>'
-      +'</div>';
+    html+='<tr>'
+      +'<td class="td-num">'+(i+1)+'</td>'
+      +'<td><div class="td-name">'+esc(x.name)+'</div></td>'
+      +'<td class="td-phone"><a href="tel:'+esc(x.phone)+'">'+esc(x.phone)+'</a>'
+      +'<br><a class="wa-btn" href="https://wa.me/'+waNum+'" target="_blank"><i class="fab fa-whatsapp"></i> Chat</a></td>'
+      +'<td><div class="td-email">'+(x.email?esc(x.email):'—')+'</div></td>'
+      +'<td><span class="tag">'+(x.service?esc(x.service):'Not specified')+'</span></td>'
+      +'<td class="td-msg">'+(x.message?esc(x.message):'—')+'</td>'
+      +'<td class="td-time">'+esc(x.time||'')+'</td>'
+      +'<td><button class="del-btn" onclick="delQ(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></td>'
+      +'</tr>';
   });
-  wrap.innerHTML = html;
+  tbody.innerHTML=html;
+  document.getElementById('countInfo').textContent='Showing '+filtered.length+' of '+all.length+' records';
+}
+
+function delQ(id){
+  if(!confirm('Delete this query?')) return;
+  setQ(getQ().filter(function(x){ return x.id!==id; }));
+  render();
+}
+
+function clearAll(){
+  if(!confirm('Delete ALL queries? This cannot be undone.')) return;
+  setQ([]);
+  render();
+}
+
+function exportCSV(){
+  var q = getQ();
+  if(!q.length){ alert('No data to export.'); return; }
+  var rows=[['#','Name','Phone','Email','Service','Message','Date & Time']];
+  q.slice().reverse().forEach(function(x,i){
+    rows.push([i+1, x.name, x.phone, x.email||'', x.service||'', x.message||'', x.time||'']);
+  });
+  var csv=rows.map(function(r){ return r.map(function(c){ return '"'+String(c).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='Thakurji_Queries_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
 }
 
 function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
 render();
+setInterval(render, 10000);
 </script>
 </body>
 </html>
