@@ -104,8 +104,6 @@ td:last-child{border-right:none}
 .reply-btn:hover{background:#d4a843;color:#0b1a2e}
 
 /* Conversation Modal */
-#chatModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);align-items:center;justify-content:center}
-#chatModal.open{display:flex}
 /* ── Chat Modal ── */
 .cm-box{background:#0b1a2e;border-radius:18px;width:100%;max-width:420px;height:85vh;max-height:620px;display:flex;flex-direction:column;box-shadow:0 28px 72px rgba(0,0,0,.6);overflow:hidden}
 .cm-head{background:linear-gradient(135deg,#0f2240,#1a3a5c);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;color:#fff;border-bottom:1px solid rgba(212,168,67,.2);flex-shrink:0}
@@ -132,12 +130,33 @@ td:last-child{border-right:none}
 .msg-t{font-size:10px;color:rgba(255,255,255,.25);margin-top:1px}
 .msg-t-right{text-align:right}
 /* Reply bar */
-.cm-reply{padding:10px 12px;border-top:1px solid rgba(255,255,255,.08);background:#0f2240;display:flex;gap:8px;align-items:flex-end;flex-shrink:0}
-.cm-reply textarea{flex:1;background:rgba(255,255,255,.07);border:1.5px solid rgba(212,168,67,.25);border-radius:12px;padding:9px 13px;font-size:13px;font-family:'Poppins',sans-serif;resize:none;outline:none;min-height:44px;max-height:100px;color:#fff;transition:.2s}
+.cm-reply{padding:12px 16px;border-top:1px solid rgba(255,255,255,.08);background:#0b1a2e;display:flex;gap:10px;align-items:flex-end;flex-shrink:0}
+.cm-reply textarea{flex:1;background:rgba(255,255,255,.07);border:1.5px solid rgba(212,168,67,.25);border-radius:22px;padding:11px 16px;font-size:13px;font-family:'Poppins',sans-serif;resize:none;outline:none;min-height:44px;max-height:120px;color:#fff;transition:.2s}
 .cm-reply textarea::placeholder{color:rgba(255,255,255,.3)}
 .cm-reply textarea:focus{border-color:#d4a843}
-.cm-reply button{width:42px;height:42px;background:#d4a843;color:#0b1a2e;border:none;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.cm-reply button{width:44px;height:44px;background:#d4a843;color:#0b1a2e;border:none;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
 .cm-reply button:hover{background:#f0c050;transform:scale(1.05)}
+
+/* Full page chat view */
+#fullChatView{display:none;position:fixed;top:0;left:210px;right:0;bottom:0;background:#0b1a2e;z-index:100;flex-direction:column}
+#fullChatView.open{display:flex}
+.fch-head{background:linear-gradient(135deg,#0f2240,#162e4d);padding:14px 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid rgba(212,168,67,.2);flex-shrink:0}
+.fch-back{width:36px;height:36px;background:rgba(255,255,255,.08);border:none;border-radius:50%;color:#d4a843;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+.fch-back:hover{background:rgba(212,168,67,.2)}
+.fch-avatar{width:42px;height:42px;background:linear-gradient(135deg,#d4a843,#f0c050);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#0b1a2e;font-size:18px;flex-shrink:0}
+.fch-info{flex:1}
+.fch-info h3{font-size:15px;font-weight:700;color:#fff;margin-bottom:1px}
+.fch-info small{font-size:11px;color:#4ade80;display:flex;align-items:center;gap:5px}
+.fch-msgs{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:12px}
+.fch-msgs::-webkit-scrollbar{width:4px}
+.fch-msgs::-webkit-scrollbar-thumb{background:rgba(212,168,67,.3);border-radius:2px}
+.fch-reply{padding:14px 20px;border-top:1px solid rgba(255,255,255,.08);background:#0f2240;display:flex;gap:12px;align-items:flex-end;flex-shrink:0}
+.fch-reply textarea{flex:1;background:rgba(255,255,255,.07);border:1.5px solid rgba(212,168,67,.25);border-radius:24px;padding:12px 18px;font-size:14px;font-family:'Poppins',sans-serif;resize:none;outline:none;min-height:48px;max-height:120px;color:#fff;transition:.2s;line-height:1.5}
+.fch-reply textarea::placeholder{color:rgba(255,255,255,.3)}
+.fch-reply textarea:focus{border-color:#d4a843;background:rgba(255,255,255,.1)}
+.fch-reply button{width:48px;height:48px;background:linear-gradient(135deg,#d4a843,#f0c050);color:#0b1a2e;border:none;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;box-shadow:0 4px 16px rgba(212,168,67,.4)}
+.fch-reply button:hover{transform:scale(1.08)}
+@media(max-width:900px){#fullChatView{left:52px}}
 
 @media(max-width:900px){
   .sidebar{width:52px;padding:14px 8px}
@@ -248,24 +267,21 @@ td:last-child{border-right:none}
 
 </div><!-- /main -->
 
-<!-- Conversation Modal -->
-<div id="chatModal">
-  <div class="cm-box">
-    <div class="cm-head">
-      <div class="cm-head-info">
-        <div class="cm-avatar">V</div>
-        <div class="cm-head-text">
-          Visitor Chat
-          <small><span style="width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block"></span> Live Session</small>
-        </div>
-      </div>
-      <span class="cm-close" onclick="closeModal()">&times;</span>
+<!-- Full Page Chat View -->
+<div id="fullChatView">
+  <div class="fch-head">
+    <button class="fch-back" onclick="closeChat()"><i class="fa fa-arrow-left"></i></button>
+    <div class="fch-avatar">V</div>
+    <div class="fch-info">
+      <h3>Visitor Conversation</h3>
+      <small><span style="width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block"></span> Live Session</small>
     </div>
-    <div class="cm-thread" id="cmThread"></div>
-    <div class="cm-reply">
-      <textarea id="adminReplyTxt" placeholder="Type your reply..." rows="2" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAdminReply();}"></textarea>
-      <button onclick="sendAdminReply()"><i class="fa fa-paper-plane"></i></button>
-    </div>
+  </div>
+  <div class="fch-msgs" id="fchMsgs"></div>
+  <div class="fch-reply">
+    <textarea id="adminReplyTxt" placeholder="Type your reply... (Enter to send)" rows="1"
+      onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAdminReply();}"></textarea>
+    <button onclick="sendAdminReply()"><i class="fa fa-paper-plane"></i></button>
   </div>
 </div>
 
@@ -460,13 +476,22 @@ function renderChat(){
   }).join('');
 }
 
-// ── CONVERSATION THREAD ──
+// ── CONVERSATION THREAD (full page) ──
 var activeSession=null;
 function openThread(sid){
   activeSession=sid;
+  buildThread();
+  document.getElementById('fullChatView').classList.add('open');
+  document.getElementById('adminReplyTxt').focus();
+  // Mark as read
+  var q=getCQ().map(function(x){if((x.sessionId||'unknown')===sid)x.read=true;return x;});
+  setCQ(q); updateChatNotif();
+}
+
+function buildThread(){
+  var sid=activeSession;
   var allMsgs=getCQ().filter(function(x){return (x.sessionId||'unknown')===sid;});
   var adminReplies=JSON.parse(localStorage.getItem('ta_admin_replies')||'[]').filter(function(r){return r.sessionId===sid;});
-  // Merge and sort by time
   var combined=[];
   allMsgs.forEach(function(m){combined.push({type:'user',text:m.question,reply:m.answer,time:m.time});});
   adminReplies.forEach(function(r){combined.push({type:'admin',text:r.message,time:r.time});});
@@ -475,28 +500,31 @@ function openThread(sid){
   combined.forEach(function(m){
     if(m.type==='user'){
       html+='<div class="msg-wrap-user">'
-        +'<div class="msg-lbl msg-t-right">Visitor</div>'
-        +'<div class="msg-user">'+esc(m.text)+'</div>'
-        +(m.reply?'</div><div class="msg-wrap-bot"><div class="msg-lbl">🤖 Bot</div><div class="msg-bot">'+esc(m.reply)+'</div>':'')
-        +'<div class="msg-t msg-t-right">'+esc(m.time)+'</div></div>';
+          +'<div class="msg-lbl msg-t-right">Visitor</div>'
+          +'<div class="msg-user">'+esc(m.text)+'</div>'
+          +'<div class="msg-t msg-t-right">'+esc(m.time)+'</div>'
+          +'</div>';
+      if(m.reply){
+        html+='<div class="msg-wrap-bot">'
+            +'<div class="msg-lbl">🤖 Bot</div>'
+            +'<div class="msg-bot">'+esc(m.reply)+'</div>'
+            +'</div>';
+      }
     } else {
       html+='<div class="msg-wrap-admin">'
-        +'<div class="msg-lbl-gold">👤 You (Admin)</div>'
-        +'<div class="msg-admin">'+esc(m.text)+'</div>'
-        +'<div class="msg-t">'+esc(m.time)+'</div></div>';
+          +'<div class="msg-lbl-gold">👤 You (Admin)</div>'
+          +'<div class="msg-admin">'+esc(m.text)+'</div>'
+          +'<div class="msg-t">'+esc(m.time)+'</div>'
+          +'</div>';
     }
   });
-  document.getElementById('cmThread').innerHTML=html||'<p style="color:#aaa;text-align:center;padding:20px">No messages</p>';
-  document.getElementById('cmThread').scrollTop=9999;
-  document.getElementById('adminReplyTxt').value='';
-  document.getElementById('chatModal').classList.add('open');
-  // Mark as read
-  var q=getCQ().map(function(x){if((x.sessionId||'unknown')===sid)x.read=true;return x;});
-  setCQ(q); updateChatNotif();
+  var el=document.getElementById('fchMsgs');
+  el.innerHTML=html||'<p style="color:rgba(255,255,255,.3);text-align:center;padding:40px;font-size:13px">No messages yet</p>';
+  el.scrollTop=el.scrollHeight;
 }
 
-function closeModal(){
-  document.getElementById('chatModal').classList.remove('open');
+function closeChat(){
+  document.getElementById('fullChatView').classList.remove('open');
   activeSession=null;
   renderChat();
 }
@@ -513,11 +541,8 @@ function sendAdminReply(){
   });
   localStorage.setItem('ta_admin_replies',JSON.stringify(replies));
   document.getElementById('adminReplyTxt').value='';
-  openThread(activeSession);
+  buildThread();
 }
-
-// Close modal on backdrop click
-document.getElementById('chatModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
 function delCQ(id){
   if(!confirm('Delete this chat query?')) return;
