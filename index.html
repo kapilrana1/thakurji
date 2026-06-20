@@ -1304,7 +1304,6 @@
     <span onclick="toggleChat()" style="cursor:pointer;font-size:18px;opacity:.7">&times;</span>
   </div>
   <div id="chatMsgs"></div>
-  <div id="quickReplies"></div>
   <div id="chatInputRow">
     <input id="chatInput" placeholder="Type your question..." onkeydown="if(event.key==='Enter')sendMsg()"/>
     <button onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button>
@@ -1523,7 +1522,7 @@
   }
 
   function addUser(txt){
-    document.getElementById('quickReplies').innerHTML='';
+    var old=document.getElementById('inlineQR'); if(old) old.remove();
     var d=document.createElement('div');
     d.className='cm-user';
     d.textContent=txt;
@@ -1559,15 +1558,22 @@
   }
 
   function setQuick(arr){
-    var qr=document.getElementById('quickReplies');
-    qr.innerHTML='';
+    // Remove any existing quick reply group from messages
+    var old=document.getElementById('inlineQR');
+    if(old) old.remove();
+    if(!arr||!arr.length) return;
+    var wrap=document.createElement('div');
+    wrap.id='inlineQR';
+    wrap.style.cssText='display:flex;flex-wrap:wrap;gap:6px;padding:4px 0 2px';
     arr.forEach(function(t){
       var b=document.createElement('button');
       b.className='qr-btn';
       b.textContent=t;
       b.onclick=function(){handleMsg(t);};
-      qr.appendChild(b);
+      wrap.appendChild(b);
     });
+    document.getElementById('chatMsgs').appendChild(wrap);
+    scrollChat();
   }
 
   function handleMsg(txt){
