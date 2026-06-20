@@ -395,6 +395,8 @@
   .c-social a:active{background:var(--gold);color:var(--navy)}
 
   .contact-form{background:#fff;border-radius:var(--r);padding:24px 20px;box-shadow:0 6px 30px rgba(11,26,46,.08)}
+  .btn-wa-alt{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:12px;padding:12px;border-radius:50px;background:#25d366;color:#fff;font-size:13px;font-weight:700;text-decoration:none;transition:all .2s}
+  .btn-wa-alt:hover{background:#1ebe5d;box-shadow:0 4px 18px rgba(37,211,102,.4);transform:translateY(-1px)}
   .contact-form h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--navy);margin-bottom:6px}
   .contact-form > p{font-size:13px;color:var(--muted);margin-bottom:22px}
   .fg{margin-bottom:14px}
@@ -1252,9 +1254,10 @@
             </select>
           </div>
           <div class="fg"><label>Message</label><textarea id="cf-msg" placeholder="Tell us more about your requirement..."></textarea></div>
-          <button type="submit" class="btn btn-gold btn-submit"><i class="fab fa-whatsapp"></i> Send on WhatsApp</button>
+          <button type="submit" class="btn btn-gold btn-submit"><i class="fa fa-paper-plane"></i> Submit Enquiry</button>
         </form>
-        <div id="formMsg"><i class="fa fa-circle-check"></i> Message sent! We'll contact you within 24 hours.</div>
+        <div id="formMsg"><i class="fa fa-circle-check"></i> Enquiry sent! We'll contact you within 24 hours.</div>
+        <a href="https://wa.me/917417387837" target="_blank" rel="noopener" class="btn-wa-alt"><i class="fab fa-whatsapp"></i> Chat on WhatsApp Directly</a>
       </div>
     </div>
   </div>
@@ -1403,32 +1406,9 @@
     var email   = document.getElementById('cf-email').value.trim();
     var service = document.getElementById('cf-service').value.trim();
     var msg     = document.getElementById('cf-msg').value.trim();
+    var time    = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
 
-    var text =
-      '🙏 *New Enquiry – Thakurji Associates*\n\n' +
-      '👤 *Name:* ' + name + '\n' +
-      '📞 *Phone:* ' + phone + '\n' +
-      (email ? '📧 *Email:* ' + email + '\n' : '') +
-      '📋 *Service:* ' + service + '\n' +
-      (msg ? '💬 *Message:* ' + msg + '\n' : '') +
-      '\n_Sent via website contact form_';
-
-    // Save to localStorage (for admin dashboard)
-    var queries = JSON.parse(localStorage.getItem('ta_queries')||'[]');
-    queries.push({
-      id: Date.now().toString(36)+Math.random().toString(36).slice(2,6),
-      name:name, phone:phone, email:email, service:service, message:msg,
-      time: new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
-    });
-    localStorage.setItem('ta_queries', JSON.stringify(queries));
-    // Also save via PHP on live server
-    var fd = new FormData();
-    fd.append('name', name); fd.append('phone', phone);
-    fd.append('email', email); fd.append('service', service); fd.append('message', msg);
-    fetch('admin/save_query.php', {method:'POST', body:fd}).catch(function(){});
-
-    var waUrl = 'https://wa.me/917417387837?text=' + encodeURIComponent(text);
-    window.open(waUrl, '_blank');
+    db.ref('formQueries').push({name:name, phone:phone, email:email, service:service, message:msg, time:time, read:false});
 
     document.getElementById('formMsg').style.display='block';
     e.target.reset();

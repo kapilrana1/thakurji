@@ -310,8 +310,9 @@ var _activeSessions = {}; // sessionId -> presence data
 
 var sortCol='time', sortDir=-1;
 
-function getQ(){ return JSON.parse(localStorage.getItem('ta_queries')||'[]'); }
-function setQ(q){ localStorage.setItem('ta_queries', JSON.stringify(q)); }
+var _allFormQueries=[];
+function getQ(){ return _allFormQueries; }
+function setQ(q){ _allFormQueries=q; }
 
 function resetFilters(){
   document.getElementById('fSearch').value='';
@@ -395,14 +396,12 @@ function render(){
 
 function delQ(id){
   if(!confirm('Delete this query?')) return;
-  setQ(getQ().filter(function(x){ return x.id!==id; }));
-  render();
+  db.ref('formQueries/'+id).remove();
 }
 
 function clearAll(){
   if(!confirm('Delete ALL queries? This cannot be undone.')) return;
-  setQ([]);
-  render();
+  db.ref('formQueries').remove();
 }
 
 function exportCSV(){
@@ -616,8 +615,13 @@ db.ref('adminReplies').on('value', function(snap){
   }
 });
 
-// Form queries — still localStorage, poll every 5s
-setInterval(function(){ render(); }, 5000);
+// Form queries — Firebase real-time
+db.ref('formQueries').on('value', function(snap){
+  var qs=[];
+  snap.forEach(function(c){ var v=c.val(); v.id=c.key; qs.push(v); });
+  _allFormQueries=qs;
+  render();
+});
 </script>
 </body>
 </html>
