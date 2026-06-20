@@ -1466,6 +1466,8 @@
   var chatOpen=false;
   var chatStarted=false;
   var WA='https://wa.me/917417387837?text=';
+  var chatSessionId='sess_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+  var shownReplies={};
 
   var KB=[
     {k:['itr','income tax','return','filing','file'],
@@ -1528,6 +1530,7 @@
     var chats=JSON.parse(localStorage.getItem('ta_chat_queries')||'[]');
     chats.push({
       id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+      sessionId:chatSessionId,
       question:txt,
       answer:'',
       time:new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
@@ -1609,6 +1612,30 @@
     inp.value='';
     handleMsg(txt);
   }
+
+  // Poll for admin replies every 4 seconds
+  setInterval(function(){
+    if(!chatStarted) return;
+    var replies=JSON.parse(localStorage.getItem('ta_admin_replies')||'[]');
+    replies.forEach(function(r){
+      if(r.sessionId===chatSessionId && !shownReplies[r.id]){
+        shownReplies[r.id]=true;
+        var d=document.createElement('div');
+        d.className='cm-bot';
+        d.innerHTML='<strong style="color:#d4a843;font-size:11px;display:block;margin-bottom:4px">👤 Thakurji Team</strong>'+r.message.replace(/\n/g,'<br>');
+        document.getElementById('chatMsgs').appendChild(d);
+        scrollChat();
+        if(!chatOpen){
+          document.getElementById('helpBtn').style.animation='none';
+          document.getElementById('helpBtn').style.background='#ef4444';
+          setTimeout(function(){
+            document.getElementById('helpBtn').style.background='';
+            document.getElementById('helpBtn').style.animation='';
+          },3000);
+        }
+      }
+    });
+  },4000);
 </script>
 </body>
 </html>

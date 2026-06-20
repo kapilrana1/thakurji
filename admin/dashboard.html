@@ -100,6 +100,30 @@ td:last-child{border-right:none}
 .chat-q{font-weight:600;color:#0b1a2e;font-size:13px}
 .chat-a{font-size:12px;color:#7a8fa8;margin-top:3px;line-height:1.5}
 .new-tag{display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
+.reply-btn{display:inline-flex;align-items:center;gap:4px;background:#0b1a2e;color:#d4a843;border:1px solid rgba(212,168,67,.4);font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;cursor:pointer;font-family:'Poppins',sans-serif;transition:.15s}
+.reply-btn:hover{background:#d4a843;color:#0b1a2e}
+
+/* Conversation Modal */
+#chatModal{display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.6);align-items:center;justify-content:center}
+#chatModal.open{display:flex}
+.cm-box{background:#fff;border-radius:16px;width:100%;max-width:560px;max-height:90vh;display:flex;flex-direction:column;box-shadow:0 24px 64px rgba(0,0,0,.4);overflow:hidden}
+.cm-head{background:#0b1a2e;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;color:#fff}
+.cm-head h3{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+.cm-head span{cursor:pointer;font-size:20px;opacity:.6;transition:.15s}
+.cm-head span:hover{opacity:1}
+.cm-thread{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:250px;max-height:360px;background:#f8fafc}
+.cm-thread::-webkit-scrollbar{width:4px}
+.cm-thread::-webkit-scrollbar-thumb{background:#d4a843;border-radius:2px}
+.msg-user{align-self:flex-end;background:#0b1a2e;color:#fff;padding:10px 14px;border-radius:14px 14px 4px 14px;max-width:80%;font-size:13px}
+.msg-bot{align-self:flex-start;background:#e8f0fe;color:#1e2d40;padding:10px 14px;border-radius:14px 14px 14px 4px;max-width:80%;font-size:13px}
+.msg-admin{align-self:flex-start;background:linear-gradient(135deg,#d4a843,#f0c050);color:#0b1a2e;padding:10px 14px;border-radius:14px 14px 14px 4px;max-width:80%;font-size:13px;font-weight:600}
+.msg-label{font-size:10px;opacity:.6;margin-bottom:3px}
+.msg-time{font-size:10px;opacity:.5;margin-top:4px;text-align:right}
+.cm-reply{padding:14px;border-top:1px solid #e8edf3;background:#fff;display:flex;gap:8px;align-items:flex-end}
+.cm-reply textarea{flex:1;border:1.5px solid #e2e8f0;border-radius:10px;padding:10px 14px;font-size:13px;font-family:'Poppins',sans-serif;resize:none;outline:none;min-height:56px;max-height:120px;transition:.2s}
+.cm-reply textarea:focus{border-color:#d4a843}
+.cm-reply button{background:#d4a843;color:#0b1a2e;border:none;border-radius:10px;padding:10px 18px;font-weight:700;font-size:13px;cursor:pointer;font-family:'Poppins',sans-serif;white-space:nowrap;transition:.15s}
+.cm-reply button:hover{background:#c49a32}
 
 @media(max-width:900px){
   .sidebar{width:52px;padding:14px 8px}
@@ -210,6 +234,21 @@ td:last-child{border-right:none}
   </div>
 
 </div><!-- /main -->
+
+<!-- Conversation Modal -->
+<div id="chatModal">
+  <div class="cm-box">
+    <div class="cm-head">
+      <h3><i class="fa fa-comment-dots" style="color:#d4a843"></i> Conversation Thread</h3>
+      <span onclick="closeModal()">&times;</span>
+    </div>
+    <div class="cm-thread" id="cmThread"></div>
+    <div class="cm-reply">
+      <textarea id="adminReplyTxt" placeholder="Type your reply..." rows="2"></textarea>
+      <button onclick="sendAdminReply()"><i class="fa fa-paper-plane"></i> Send</button>
+    </div>
+  </div>
+</div>
 
 <script>
 if(sessionStorage.getItem('ta_admin')!=='1') location.href='index.html';
@@ -368,16 +407,83 @@ function renderChat(){
     tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:60px;color:#7a8fa8"><i class="fa fa-comment-dots" style="display:block;font-size:36px;color:#d4a84355;margin-bottom:12px"></i>No chat messages yet.<br><small>Messages from website chat will appear here.</small></td></tr>';
     return;
   }
+  // Group by sessionId for display
+  var sessions={};
+  getCQ().forEach(function(x){
+    var sid=x.sessionId||'unknown';
+    if(!sessions[sid]) sessions[sid]={msgs:[],firstTime:x.time,unread:0};
+    sessions[sid].msgs.push(x);
+    if(!x.read) sessions[sid].unread++;
+  });
   tbody.innerHTML = all.map(function(x,i){
-    return '<tr class="'+(x.read?'':'unread')+'">'
+    var sid=x.sessionId||'unknown';
+    return '<tr class="'+(x.read?'':'unread')+'" style="cursor:pointer" onclick="openThread(\''+sid+'\')">'
       +'<td class="td-num">'+(i+1)+(x.read?'':'<span class="new-tag">NEW</span>')+'</td>'
       +'<td><div class="chat-q">'+esc(x.question||'')+'</div></td>'
-      +'<td><div class="chat-a">'+(x.answer?esc(x.answer):'<em style="color:#aaa">Pending reply</em>')+'</div></td>'
+      +'<td><div class="chat-a">'+(x.answer?esc(x.answer):'<em style="color:#aaa">—</em>')+'</div></td>'
       +'<td class="td-time">'+esc(x.time||'')+'</td>'
-      +'<td><button class="del-btn" onclick="delCQ(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></td>'
+      +'<td><button class="reply-btn" onclick="event.stopPropagation();openThread(\''+sid+'\')"><i class="fa fa-reply"></i> Reply</button>'
+      +'<button class="del-btn" style="margin-top:6px" onclick="event.stopPropagation();delCQ(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></td>'
       +'</tr>';
   }).join('');
 }
+
+// ── CONVERSATION THREAD ──
+var activeSession=null;
+function openThread(sid){
+  activeSession=sid;
+  var allMsgs=getCQ().filter(function(x){return (x.sessionId||'unknown')===sid;});
+  var adminReplies=JSON.parse(localStorage.getItem('ta_admin_replies')||'[]').filter(function(r){return r.sessionId===sid;});
+  // Merge and sort by time
+  var combined=[];
+  allMsgs.forEach(function(m){combined.push({type:'user',text:m.question,reply:m.answer,time:m.time});});
+  adminReplies.forEach(function(r){combined.push({type:'admin',text:r.message,time:r.time});});
+  combined.sort(function(a,b){return a.time>b.time?1:-1;});
+  var html='';
+  combined.forEach(function(m){
+    if(m.type==='user'){
+      html+='<div><div class="msg-label" style="text-align:right;color:#666">Visitor</div>'
+        +'<div class="msg-user">'+esc(m.text)+'</div>'
+        +(m.reply?'<div class="msg-label" style="color:#888;margin-top:6px">Bot reply</div><div class="msg-bot">'+esc(m.reply)+'</div>':'')
+        +'<div class="msg-time">'+esc(m.time)+'</div></div>';
+    } else {
+      html+='<div><div class="msg-label" style="color:#a8831f">You (Admin)</div>'
+        +'<div class="msg-admin">'+esc(m.text)+'</div>'
+        +'<div class="msg-time">'+esc(m.time)+'</div></div>';
+    }
+  });
+  document.getElementById('cmThread').innerHTML=html||'<p style="color:#aaa;text-align:center;padding:20px">No messages</p>';
+  document.getElementById('cmThread').scrollTop=9999;
+  document.getElementById('adminReplyTxt').value='';
+  document.getElementById('chatModal').classList.add('open');
+  // Mark as read
+  var q=getCQ().map(function(x){if((x.sessionId||'unknown')===sid)x.read=true;return x;});
+  setCQ(q); updateChatNotif();
+}
+
+function closeModal(){
+  document.getElementById('chatModal').classList.remove('open');
+  activeSession=null;
+  renderChat();
+}
+
+function sendAdminReply(){
+  var txt=document.getElementById('adminReplyTxt').value.trim();
+  if(!txt||!activeSession) return;
+  var replies=JSON.parse(localStorage.getItem('ta_admin_replies')||'[]');
+  replies.push({
+    id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+    sessionId:activeSession,
+    message:txt,
+    time:new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+  });
+  localStorage.setItem('ta_admin_replies',JSON.stringify(replies));
+  document.getElementById('adminReplyTxt').value='';
+  openThread(activeSession);
+}
+
+// Close modal on backdrop click
+document.getElementById('chatModal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
 function delCQ(id){
   if(!confirm('Delete this chat query?')) return;
