@@ -128,60 +128,80 @@ td:last-child{border-right:none}
 <!-- Main -->
 <div class="main">
 
-  <!-- Header -->
-  <div class="header">
-    <h1><i class="fa fa-table" style="color:#d4a843;font-size:16px"></i> Client Queries <span class="badge" id="totalBadge">0</span></h1>
-    <div class="header-right">
-      <button class="btn-export" onclick="exportCSV()"><i class="fa fa-file-excel"></i> Export Excel</button>
-      <button class="btn-clear" onclick="clearAll()"><i class="fa fa-trash"></i> Clear All</button>
+  <!-- FORM QUERIES SECTION -->
+  <div id="formSection">
+    <div class="header">
+      <h1><i class="fa fa-table" style="color:#d4a843;font-size:16px"></i> Form Queries <span class="badge" id="totalBadge">0</span></h1>
+      <div class="header-right">
+        <button class="btn-export" onclick="exportCSV()"><i class="fa fa-file-excel"></i> Export Excel</button>
+        <button class="btn-clear" onclick="clearAll()"><i class="fa fa-trash"></i> Clear All</button>
+      </div>
     </div>
-  </div>
+    <div class="stats">
+      <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">📥 Total Queries</div></div>
+      <div class="stat"><div class="num" id="statToday">0</div><div class="lbl">📅 Today</div></div>
+      <div class="stat"><div class="num" id="statThis">0</div><div class="lbl">📆 This Month</div></div>
+      <div class="stat"><div class="num" id="statWa">0</div><div class="lbl">💬 WhatsApp Sent</div></div>
+    </div>
+    <div class="filter-bar">
+      <label><i class="fa fa-filter"></i> Filters</label>
+      <div class="divider"></div>
+      <input type="text" id="fSearch" placeholder="🔍  Search name / phone…" oninput="render()"/>
+      <select id="fService" onchange="render()">
+        <option value="">All Services</option>
+        <option>Income Tax Return (ITR)</option>
+        <option>GST Registration</option>
+        <option>GST Returns</option>
+        <option>MSME / Udyam Registration</option>
+        <option>Tax Planning</option>
+        <option>Accounts &amp; Book Keeping</option>
+        <option>Company Incorporation</option>
+        <option>Other / Multiple Services</option>
+      </select>
+      <label>From</label>
+      <input type="date" id="fFrom" onchange="render()"/>
+      <label>To</label>
+      <input type="date" id="fTo" onchange="render()"/>
+      <button class="btn-reset" onclick="resetFilters()"><i class="fa fa-rotate-left"></i> Reset</button>
+    </div>
+    <div class="tbl-wrap">
+      <table id="mainTable">
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th onclick="sortBy('name')">Client Name <span class="sort-icon">⇅</span></th>
+            <th onclick="sortBy('phone')">Phone <span class="sort-icon">⇅</span></th>
+            <th onclick="sortBy('email')">Email <span class="sort-icon">⇅</span></th>
+            <th onclick="sortBy('service')">Service <span class="sort-icon">⇅</span></th>
+            <th>Message</th>
+            <th onclick="sortBy('time')">Date &amp; Time <span class="sort-icon">⇅</span></th>
+            <th style="width:80px">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+      <div class="count-info" id="countInfo"></div>
+    </div><!-- /tbl-wrap -->
+  </div><!-- /formSection -->
 
-  <!-- Stats -->
-  <div class="stats">
-    <div class="stat"><div class="num" id="statTotal">0</div><div class="lbl">📥 Total Queries</div></div>
-    <div class="stat"><div class="num" id="statToday">0</div><div class="lbl">📅 Today</div></div>
-    <div class="stat"><div class="num" id="statThis">0</div><div class="lbl">📆 This Month</div></div>
-    <div class="stat"><div class="num" id="statWa">0</div><div class="lbl">💬 WhatsApp Sent</div></div>
-  </div>
-
-  <!-- Filter Bar -->
-  <div class="filter-bar">
-    <label><i class="fa fa-filter"></i> Filters</label>
-    <div class="divider"></div>
-    <input type="text" id="fSearch" placeholder="🔍  Search name / phone…" oninput="render()"/>
-    <select id="fService" onchange="render()">
-      <option value="">All Services</option>
-      <option>Income Tax Return (ITR)</option>
-      <option>GST Registration</option>
-      <option>GST Returns</option>
-      <option>MSME / Udyam Registration</option>
-      <option>Tax Planning</option>
-      <option>Accounts &amp; Book Keeping</option>
-      <option>Company Incorporation</option>
-      <option>Other / Multiple Services</option>
-    </select>
-    <label>From</label>
-    <input type="date" id="fFrom" onchange="render()"/>
-    <label>To</label>
-    <input type="date" id="fTo" onchange="render()"/>
-    <button class="btn-reset" onclick="resetFilters()"><i class="fa fa-rotate-left"></i> Reset</button>
-  </div>
-
-  <!-- Chat Section -->
-  <div id="chatSection">
+  <!-- CHAT QUERIES SECTION -->
+  <div id="chatSection" style="display:none">
     <div class="header">
       <h1><i class="fa fa-comment-dots" style="color:#d4a843;font-size:16px"></i> Chat Queries <span class="badge" id="chatTotalBadge">0</span></h1>
       <div class="header-right">
         <button class="btn-clear" onclick="clearAllChat()"><i class="fa fa-trash"></i> Clear All</button>
       </div>
     </div>
+    <div class="stats" style="grid-template-columns:repeat(2,1fr)">
+      <div class="stat"><div class="num" id="chatStatTotal">0</div><div class="lbl">💬 Total Messages</div></div>
+      <div class="stat"><div class="num" id="chatStatToday">0</div><div class="lbl">📅 Today</div></div>
+    </div>
     <div class="chat-tbl-wrap">
       <table class="chat-tbl">
         <thead><tr>
           <th style="width:40px">#</th>
-          <th>User Question</th>
-          <th>Bot Answer</th>
+          <th>User Message</th>
+          <th>Bot Reply</th>
           <th>Date &amp; Time</th>
           <th style="width:80px">Action</th>
         </tr></thead>
@@ -190,26 +210,7 @@ td:last-child{border-right:none}
     </div>
   </div>
 
-  <!-- Table -->
-  <div class="tbl-wrap" id="formSection">
-    <table id="mainTable">
-      <thead>
-        <tr>
-          <th style="width:40px">#</th>
-          <th onclick="sortBy('name')">Client Name <span class="sort-icon">⇅</span></th>
-          <th onclick="sortBy('phone')">Phone <span class="sort-icon">⇅</span></th>
-          <th onclick="sortBy('email')">Email <span class="sort-icon">⇅</span></th>
-          <th onclick="sortBy('service')">Service <span class="sort-icon">⇅</span></th>
-          <th>Message</th>
-          <th onclick="sortBy('time')">Date &amp; Time <span class="sort-icon">⇅</span></th>
-          <th style="width:80px">Action</th>
-        </tr>
-      </thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <div class="count-info" id="countInfo"></div>
-  </div>
-</div>
+</div><!-- /main -->
 
 <script>
 if(sessionStorage.getItem('ta_admin')!=='1') location.href='index.html';
@@ -359,17 +360,20 @@ function updateChatNotif(){
 
 function renderChat(){
   var all = getCQ().slice().reverse();
+  var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
   document.getElementById('chatTotalBadge').textContent = all.length;
+  document.getElementById('chatStatTotal').textContent = all.length;
+  document.getElementById('chatStatToday').textContent = all.filter(function(x){return (x.time||'').startsWith(today);}).length;
   var tbody = document.getElementById('chatTbody');
   if(!all.length){
-    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:50px;color:#7a8fa8"><i class="fa fa-comment-dots" style="display:block;font-size:32px;color:#d4a84355;margin-bottom:10px"></i>No chat queries yet.</td></tr>';
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:60px;color:#7a8fa8"><i class="fa fa-comment-dots" style="display:block;font-size:36px;color:#d4a84355;margin-bottom:12px"></i>No chat messages yet.<br><small>Messages from website chat will appear here.</small></td></tr>';
     return;
   }
   tbody.innerHTML = all.map(function(x,i){
     return '<tr class="'+(x.read?'':'unread')+'">'
       +'<td class="td-num">'+(i+1)+(x.read?'':'<span class="new-tag">NEW</span>')+'</td>'
       +'<td><div class="chat-q">'+esc(x.question||'')+'</div></td>'
-      +'<td><div class="chat-a">'+esc(x.answer||'')+'</div></td>'
+      +'<td><div class="chat-a">'+(x.answer?esc(x.answer):'<em style="color:#aaa">Pending reply</em>')+'</div></td>'
       +'<td class="td-time">'+esc(x.time||'')+'</td>'
       +'<td><button class="del-btn" onclick="delCQ(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></td>'
       +'</tr>';
