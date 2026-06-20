@@ -561,7 +561,29 @@ function clearAllChat(){
 render();
 renderChat();
 updateChatNotif();
-setInterval(function(){ render(); renderChat(); updateChatNotif(); }, 8000);
+
+// Poll every 3 seconds
+setInterval(function(){
+  render();
+  // If full chat view open, refresh thread for new visitor messages
+  if(activeSession && document.getElementById('fullChatView').classList.contains('open')){
+    buildThread();
+  }
+  renderChat();
+  updateChatNotif();
+}, 3000);
+
+// Instant cross-tab sync: fires when another tab changes localStorage
+window.addEventListener('storage', function(e){
+  if(e.key==='ta_chat_queries'||e.key==='ta_admin_replies'||e.key==='ta_queries'){
+    renderChat();
+    updateChatNotif();
+    render();
+    if(activeSession && document.getElementById('fullChatView').classList.contains('open')){
+      buildThread();
+    }
+  }
+});
 </script>
 </body>
 </html>
