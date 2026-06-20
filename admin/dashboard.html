@@ -222,11 +222,10 @@ td:last-child{border-right:none}
     <div class="chat-tbl-wrap">
       <table class="chat-tbl">
         <thead><tr>
-          <th style="width:40px">#</th>
-          <th>User Message</th>
-          <th>Bot Reply</th>
-          <th>Date &amp; Time</th>
-          <th style="width:80px">Action</th>
+          <th style="width:60px">#</th>
+          <th>Conversation Preview</th>
+          <th style="width:160px">Last Message</th>
+          <th style="width:100px">Action</th>
         </tr></thead>
         <tbody id="chatTbody"></tbody>
       </table>
@@ -397,33 +396,46 @@ function updateChatNotif(){
 }
 
 function renderChat(){
-  var all = getCQ().slice().reverse();
+  var all = getCQ();
   var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-  document.getElementById('chatTotalBadge').textContent = all.length;
+
+  // Group by sessionId
+  var sessionMap={};
+  all.forEach(function(x){
+    var sid=x.sessionId||'nosession';
+    if(!sessionMap[sid]) sessionMap[sid]={sid:sid,msgs:[],lastTime:x.time,unread:0};
+    sessionMap[sid].msgs.push(x);
+    sessionMap[sid].lastTime=x.time;
+    if(!x.read) sessionMap[sid].unread++;
+  });
+
+  // Sort sessions by last message time (newest first)
+  var sessions=Object.values(sessionMap).sort(function(a,b){
+    return a.lastTime<b.lastTime?1:-1;
+  });
+
+  document.getElementById('chatTotalBadge').textContent = sessions.length;
   document.getElementById('chatStatTotal').textContent = all.length;
   document.getElementById('chatStatToday').textContent = all.filter(function(x){return (x.time||'').startsWith(today);}).length;
+
   var tbody = document.getElementById('chatTbody');
-  if(!all.length){
-    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:60px;color:#7a8fa8"><i class="fa fa-comment-dots" style="display:block;font-size:36px;color:#d4a84355;margin-bottom:12px"></i>No chat messages yet.<br><small>Messages from website chat will appear here.</small></td></tr>';
+  if(!sessions.length){
+    tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:60px;color:#7a8fa8"><i class="fa fa-comment-dots" style="display:block;font-size:36px;color:#d4a84355;margin-bottom:12px"></i>No chat sessions yet.<br><small>Messages from website chat will appear here.</small></td></tr>';
     return;
   }
-  // Group by sessionId for display
-  var sessions={};
-  getCQ().forEach(function(x){
-    var sid=x.sessionId||'unknown';
-    if(!sessions[sid]) sessions[sid]={msgs:[],firstTime:x.time,unread:0};
-    sessions[sid].msgs.push(x);
-    if(!x.read) sessions[sid].unread++;
-  });
-  tbody.innerHTML = all.map(function(x,i){
-    var sid=x.sessionId||'unknown';
-    return '<tr class="'+(x.read?'':'unread')+'" style="cursor:pointer" onclick="openThread(\''+sid+'\')">'
-      +'<td class="td-num">'+(i+1)+(x.read?'':'<span class="new-tag">NEW</span>')+'</td>'
-      +'<td><div class="chat-q">'+esc(x.question||'')+'</div></td>'
-      +'<td><div class="chat-a">'+(x.answer?esc(x.answer):'<em style="color:#aaa">—</em>')+'</div></td>'
-      +'<td class="td-time">'+esc(x.time||'')+'</td>'
-      +'<td><button class="reply-btn" onclick="event.stopPropagation();openThread(\''+sid+'\')"><i class="fa fa-reply"></i> Reply</button>'
-      +'<button class="del-btn" style="margin-top:6px" onclick="event.stopPropagation();delCQ(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></td>'
+
+  tbody.innerHTML = sessions.map(function(s,i){
+    var firstMsg=s.msgs[0].question||'';
+    var lastMsg=s.msgs[s.msgs.length-1].question||'';
+    var hasUnread=s.unread>0;
+    return '<tr class="'+(hasUnread?'unread':'')+'" style="cursor:pointer" onclick="openThread(\''+s.sid+'\')">'
+      +'<td class="td-num">'+(i+1)+(hasUnread?'<span class="new-tag">'+s.unread+' NEW</span>':'')+'</td>'
+      +'<td>'
+        +'<div class="chat-q" style="margin-bottom:3px">'+esc(firstMsg.slice(0,60))+(firstMsg.length>60?'…':'')+'</div>'
+        +(s.msgs.length>1?'<div class="chat-a">'+s.msgs.length+' messages · Last: <em>'+esc(lastMsg.slice(0,40))+'</em></div>':'')
+      +'</td>'
+      +'<td class="td-time" style="white-space:nowrap">'+esc(s.lastTime)+'</td>'
+      +'<td><button class="reply-btn" onclick="event.stopPropagation();openThread(\''+s.sid+'\')"><i class="fa fa-reply"></i> Open Chat</button></td>'
       +'</tr>';
   }).join('');
 }
