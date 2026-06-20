@@ -197,7 +197,7 @@
     border-radius:22px;
     backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
     box-shadow:0 28px 72px rgba(0,0,0,.5),inset 0 1px 0 rgba(212,168,67,.14);
-    overflow:hidden;width:100%;
+    overflow:hidden;width:100%;max-width:100%;box-sizing:border-box;
     animation:hvcardFloat 6s ease-in-out infinite
   }
   @keyframes hvcardFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
@@ -247,7 +247,7 @@
   .hvs-sub{font-size:11.5px;color:rgba(255,255,255,.45);line-height:1.5}
 
   /* 2×2 feature grid */
-  .hvs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 18px 18px;flex:1}
+  .hvs-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px 14px;flex:1}
   .hvs-box{
     background:rgba(255,255,255,.04);
     border:1px solid rgba(255,255,255,.07);
@@ -267,9 +267,10 @@
   /* footer */
   .hv-footer{
     display:flex;align-items:center;gap:8px;
-    padding:13px 18px;
+    padding:12px 14px;
     background:linear-gradient(90deg,rgba(212,168,67,.07),rgba(212,168,67,.02));
-    border-top:1px solid rgba(212,168,67,.12)
+    border-top:1px solid rgba(212,168,67,.12);
+    flex-wrap:nowrap;overflow:hidden
   }
   .hv-wa{
     flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
@@ -579,8 +580,8 @@
     #nav{top:38px;padding:14px 0}
     #nav.scrolled{top:0}
     #hero{padding:98px 0 60px;align-items:center;min-height:100svh}
-    .hero-inner{grid-template-columns:1fr 1fr;gap:clamp(24px,3vw,48px);align-items:center}
-    .hero-visual{width:100%;min-width:0;overflow:hidden}
+    .hero-inner{grid-template-columns:52% 1fr;gap:clamp(20px,2.5vw,40px);align-items:center}
+    .hero-visual{width:100%;min-width:0;overflow:hidden;max-width:100%}
     .hero-btns{flex-direction:row}
     .hero-btns .btn{width:auto}
     .nav-links{display:flex;flex-direction:row;position:static;background:none;border:none;padding:0;gap:24px}
@@ -630,9 +631,8 @@
      RESPONSIVE — Large Desktop (≥1280px)
   ═══════════════════════════════════════════════ */
   @media(min-width:1280px){
-    .hero-content{max-width:100%}
+    .hero-inner{grid-template-columns:55% 1fr;gap:40px}
     .srv-grid{grid-template-columns:repeat(3,1fr)}
-    .hero-inner{grid-template-columns:1fr 1fr}
   }
 
   /* ── Apple / High DPI ───────────────────────── */
