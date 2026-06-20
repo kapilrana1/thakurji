@@ -1468,6 +1468,7 @@
   var WA='https://wa.me/917417387837?text=';
   var chatSessionId='sess_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   var shownReplies={};
+  var fallbackShown=false;
 
   var KB=[
     {k:['itr','income tax','return','filing','file'],
@@ -1595,13 +1596,25 @@
     if(!found){
       var greetings=['hi','hello','hey','hii','helo','namaste','good'];
       var isGreet=greetings.some(function(g){return lower.includes(g);});
-      var rep2=isGreet
-        ? 'Hello! 😊 How can I help you today? Please choose a topic below or type your question.'
-        : 'Thank you for your message! Our team will get back to you shortly. For instant help, WhatsApp us now!';
-      setTimeout(function(){
-        addBot(rep2); updateLastAnswer(rep2);
-        setQuick(['Chat on WhatsApp','ITR Filing','GST Services','Office Address','Company Registration']);
-      },400);
+      if(isGreet){
+        var rep2='Hello! 😊 How can I help you today? Please choose a topic below or type your question.';
+        setTimeout(function(){
+          addBot(rep2); updateLastAnswer(rep2);
+          setQuick(['ITR Filing','GST Services','Company Registration','MSME/Udyam','Tax Planning','Office Address','Chat on WhatsApp']);
+        },400);
+      } else if(!fallbackShown){
+        fallbackShown=true;
+        var rep2='Thank you for your message! Our team will get back to you shortly. For instant help, WhatsApp us now!';
+        setTimeout(function(){
+          addBot(rep2); updateLastAnswer(rep2);
+          setQuick(['Chat on WhatsApp','ITR Filing','GST Services','Office Address','Company Registration']);
+        },400);
+      } else {
+        // After first fallback — just show quick options silently
+        setTimeout(function(){
+          setQuick(['Chat on WhatsApp','ITR Filing','GST Services','Office Address','Company Registration']);
+        },200);
+      }
     }
   }
 
