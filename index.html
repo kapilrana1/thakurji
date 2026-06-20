@@ -1236,7 +1236,7 @@
         <form id="cForm" onsubmit="submitForm(event)">
           <div class="form-row">
             <div class="fg"><label>Your Name</label><input id="cf-name" type="text" placeholder="Full Name" required/></div>
-            <div class="fg"><label>Phone</label><input id="cf-phone" type="tel" placeholder="+91 XXXXX XXXXX" maxlength="10" pattern="[0-9]{10}" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,10)" required/></div>
+            <div class="fg"><label>Phone</label><input id="cf-phone" type="tel" placeholder="10 digit mobile number" maxlength="10" pattern="[6-9][0-9]{9}" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10)" onkeydown="if(!/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|Tab/.test(event.key))event.preventDefault()" onpaste="event.preventDefault()" required/></div>
           </div>
           <div class="fg"><label>Email</label><input id="cf-email" type="email" placeholder="email@example.com"/></div>
           <div class="fg">
