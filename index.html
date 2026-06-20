@@ -1516,6 +1516,27 @@
     d.textContent=txt;
     document.getElementById('chatMsgs').appendChild(d);
     scrollChat();
+    // Save EVERY user message immediately — no filter
+    var chats=JSON.parse(localStorage.getItem('ta_chat_queries')||'[]');
+    chats.push({
+      id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+      question:txt,
+      answer:'',
+      time:new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+      read:false
+    });
+    localStorage.setItem('ta_chat_queries',JSON.stringify(chats));
+    lastChatId=chats[chats.length-1].id;
+  }
+
+  var lastChatId=null;
+
+  function updateLastAnswer(ans){
+    var chats=JSON.parse(localStorage.getItem('ta_chat_queries')||'[]');
+    for(var i=chats.length-1;i>=0;i--){
+      if(chats[i].id===lastChatId){chats[i].answer=ans;break;}
+    }
+    localStorage.setItem('ta_chat_queries',JSON.stringify(chats));
   }
 
   function scrollChat(){
@@ -1535,26 +1556,13 @@
     });
   }
 
-  function saveChatQuery(question, answer){
-    var chats = JSON.parse(localStorage.getItem('ta_chat_queries')||'[]');
-    chats.push({
-      id: Date.now().toString(36)+Math.random().toString(36).slice(2,5),
-      question: question,
-      answer: answer,
-      time: new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
-      read: false
-    });
-    localStorage.setItem('ta_chat_queries', JSON.stringify(chats));
-  }
-
   function handleMsg(txt){
     addUser(txt);
     var lower=txt.toLowerCase();
     if(lower.includes('whatsapp')||lower.includes('call us')){
       var waMsg='Hello, I need information about Thakurji Associates services.';
       var rep='Connecting you to WhatsApp now... 📲';
-      addBot(rep);
-      saveChatQuery(txt, rep);
+      addBot(rep); updateLastAnswer(rep);
       setTimeout(function(){window.open(WA+encodeURIComponent(waMsg),'_blank');},600);
       setQuick(['Any other question?']);
       return;
@@ -1564,23 +1572,24 @@
       var entry=KB[i];
       for(var j=0;j<entry.k.length;j++){
         if(lower.includes(entry.k[j])){
-          setTimeout(function(e,q){
-            addBot(e.a);
+          setTimeout(function(e){
+            addBot(e.a); updateLastAnswer(e.a);
             setQuick(e.q);
-            saveChatQuery(q, e.a);
-          }.bind(null,entry,txt),400);
-          found=true;
-          break;
+          }.bind(null,entry),400);
+          found=true; break;
         }
       }
       if(found)break;
     }
     if(!found){
-      var rep2='For this query, it\'s best to speak with our expert directly. WhatsApp us — we reply instantly!';
+      var greetings=['hi','hello','hey','hii','helo','namaste','good'];
+      var isGreet=greetings.some(function(g){return lower.includes(g);});
+      var rep2=isGreet
+        ? 'Hello! 😊 How can I help you today? Please choose a topic below or type your question.'
+        : 'Thank you for your message! Our team will get back to you shortly. For instant help, WhatsApp us now!';
       setTimeout(function(){
-        addBot(rep2);
-        setQuick(['Chat on WhatsApp','ITR Filing','GST Services','Office Address']);
-        saveChatQuery(txt, rep2);
+        addBot(rep2); updateLastAnswer(rep2);
+        setQuick(['Chat on WhatsApp','ITR Filing','GST Services','Office Address','Company Registration']);
       },400);
     }
   }
