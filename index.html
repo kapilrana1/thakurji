@@ -133,8 +133,8 @@
   #hero{
     min-height:100svh;width:100%;
     background:linear-gradient(150deg,#06111f 0%,#0b1a2e 45%,#112240 80%,#0d1e38 100%);
-    display:flex;align-items:flex-start;
-    padding:76px 0 52px;
+    display:flex;align-items:center;
+    padding:60px 0 40px;
     position:relative;overflow:hidden;box-sizing:border-box
   }
   .hero-glow{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none}
@@ -147,7 +147,7 @@
   @keyframes pfloat{0%{transform:translateY(100vh);opacity:0}10%{opacity:.5}90%{opacity:.5}100%{transform:translateY(-10px);opacity:0}}
 
   /* hero inner grid */
-  .hero-inner{display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,64px);position:relative;z-index:2;width:100%;align-items:start;padding-top:40px}
+  .hero-inner{display:grid;grid-template-columns:1fr;gap:clamp(24px,4vw,64px);position:relative;z-index:2;width:100%;align-items:center}
 
   .hero-content{}
   .hero-badge{
@@ -161,8 +161,8 @@
   @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
   .hero-title{
     font-family:'Playfair Display',serif;
-    font-size:clamp(28px,4.5vw,72px);color:#fff;line-height:1.12;
-    font-weight:700;margin-bottom:16px
+    font-size:clamp(32px,5vw,78px);color:#fff;line-height:1.12;
+    font-weight:700;margin-bottom:20px
   }
   .hero-title .hl{
     background:linear-gradient(135deg,var(--gold),var(--goldl));
@@ -173,11 +173,11 @@
   .hero-line:nth-child(2){animation-delay:.28s}
   .hero-line:nth-child(3){animation-delay:.41s}
   @keyframes slideright{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
-  .hero-sub{font-size:clamp(13px,1.4vw,17px);color:rgba(255,255,255,.65);line-height:1.8;margin-bottom:28px;opacity:0;animation:fadeup .7s ease .5s forwards}
+  .hero-sub{font-size:clamp(13px,1.4vw,17px);color:rgba(255,255,255,.65);line-height:1.8;margin-bottom:32px;opacity:0;animation:fadeup .7s ease .5s forwards}
   .hero-btns{display:flex;flex-direction:column;gap:12px;opacity:0;animation:fadeup .7s ease .65s forwards}
   .hero-btns .btn{width:100%}
   @keyframes fadeup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-  .hero-stats{display:flex;gap:clamp(16px,2.5vw,36px);margin-top:28px;flex-wrap:nowrap;opacity:0;animation:fadeup .7s ease .8s forwards;padding-top:20px;border-top:1px solid rgba(255,255,255,.07)}
+  .hero-stats{display:flex;gap:clamp(16px,2.5vw,36px);margin-top:36px;flex-wrap:nowrap;opacity:0;animation:fadeup .7s ease .8s forwards;padding-top:24px;border-top:1px solid rgba(255,255,255,.07)}
   .hstat strong{display:block;font-size:clamp(22px,2.5vw,36px);font-weight:800;color:var(--gold);line-height:1}
   .hstat span{font-size:clamp(11px,1vw,13px);color:rgba(255,255,255,.45);letter-spacing:.5px;white-space:nowrap}
 
@@ -513,8 +513,8 @@
     .topbar{display:flex;height:38px}
     #nav{top:38px;padding:14px 0}
     #nav.scrolled{top:0}
-    #hero{padding:98px 0 60px;align-items:flex-start;min-height:100svh}
-    .hero-inner{grid-template-columns:1fr 1fr;gap:40px;align-items:start;padding-top:0}
+    #hero{padding:98px 0 40px;align-items:center;min-height:100svh}
+    .hero-inner{grid-template-columns:1fr 1fr;gap:40px;align-items:center}
     .hero-btns{flex-direction:row}
     .hero-btns .btn{width:auto}
     .nav-links{display:flex;flex-direction:row;position:static;background:none;border:none;padding:0;gap:24px}
