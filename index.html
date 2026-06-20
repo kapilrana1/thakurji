@@ -1469,6 +1469,7 @@
   var shownReplies={};
   var fallbackShown=false;
   var greetingShown=false;
+  var optionsShown=false;
 
   var KB=[
     {k:['itr','income tax','return','filing','file'],
@@ -1522,7 +1523,7 @@
   }
 
   function addUser(txt){
-    var old=document.getElementById('inlineQR'); if(old) old.remove();
+    var old=document.getElementById('inlineQR'); if(old){ old.remove(); }
     var d=document.createElement('div');
     d.className='cm-user';
     d.textContent=txt;
@@ -1557,8 +1558,9 @@
     m.scrollTop=m.scrollHeight;
   }
 
-  function setQuick(arr){
-    // Remove any existing quick reply group from messages
+  function setQuick(arr, force){
+    if(optionsShown && !force) return; // show only once
+    optionsShown=true;
     var old=document.getElementById('inlineQR');
     if(old) old.remove();
     if(!arr||!arr.length) return;
