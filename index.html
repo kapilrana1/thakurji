@@ -1469,6 +1469,7 @@
   var chatSessionId='sess_'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   var shownReplies={};
   var fallbackShown=false;
+  var greetingShown=false;
 
   var KB=[
     {k:['itr','income tax','return','filing','file'],
@@ -1505,6 +1506,7 @@
 
   function startChat(){
     chatStarted=true;
+    greetingShown=true;
     addBot('Hello! 👋 I\'m the Thakurji Associates assistant. How can I help you today?');
     setQuick([
       'ITR Filing','GST Services','Company Registration',
@@ -1594,9 +1596,15 @@
       if(found)break;
     }
     if(!found){
-      var greetings=['hi','hello','hey','hii','helo','namaste','good'];
+      var greetings=['hi','hello','hey','hii','helo','namaste','good','hlo'];
       var isGreet=greetings.some(function(g){return lower.includes(g);});
-      if(isGreet){
+      if(isGreet && greetingShown){
+        // Greeting already shown — just refresh quick options silently
+        setTimeout(function(){
+          setQuick(['ITR Filing','GST Services','Company Registration','MSME/Udyam','Tax Planning','Office Address','Chat on WhatsApp']);
+        },200);
+      } else if(isGreet && !greetingShown){
+        greetingShown=true;
         var rep2='Hello! 😊 How can I help you today? Please choose a topic below or type your question.';
         setTimeout(function(){
           addBot(rep2); updateLastAnswer(rep2);
@@ -1610,7 +1618,6 @@
           setQuick(['Chat on WhatsApp','ITR Filing','GST Services','Office Address','Company Registration']);
         },400);
       } else {
-        // After first fallback — just show quick options silently
         setTimeout(function(){
           setQuick(['Chat on WhatsApp','ITR Filing','GST Services','Office Address','Company Registration']);
         },200);
