@@ -1518,9 +1518,21 @@
     if(chatOpen && !chatStarted){startChat();}
   }
 
+  var presenceRef=null;
+
   function startChat(){
     chatStarted=true;
     greetingShown=true;
+
+    // Firebase presence — auto-remove on disconnect
+    presenceRef=db.ref('presence/'+chatSessionId);
+    presenceRef.set({
+      sessionId:chatSessionId,
+      startTime:new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
+    });
+    presenceRef.onDisconnect().remove();
+    window.addEventListener('beforeunload',function(){ presenceRef.remove(); });
+
     addBot('Hello! 👋 I\'m the Thakurji Associates assistant. How can I help you today?');
     setQuick([
       'ITR Filing','GST Services','Company Registration',

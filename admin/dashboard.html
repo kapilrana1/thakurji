@@ -306,6 +306,7 @@ var db = firebase.database();
 // In-memory stores updated by Firebase listeners
 var _allChats = [];
 var _allReplies = [];
+var _activeSessions = {}; // sessionId -> presence data
 
 var sortCol='time', sortDir=-1;
 
@@ -453,37 +454,44 @@ function renderChat(){
   var all = getCQ();
   var today = new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
 
-  // Group by sessionId
+  // Group by sessionId — only active sessions (present in Firebase presence)
   var sessionMap={};
   all.forEach(function(x){
     var sid=x.sessionId||'nosession';
+    if(!_activeSessions[sid]) return; // skip offline sessions
     if(!sessionMap[sid]) sessionMap[sid]={sid:sid,msgs:[],lastTime:x.time,unread:0};
     sessionMap[sid].msgs.push(x);
     sessionMap[sid].lastTime=x.time;
     if(!x.read) sessionMap[sid].unread++;
   });
 
-  // Sort sessions by last message time (newest first)
+  // Sort: newest message first
   var sessions=Object.values(sessionMap).sort(function(a,b){
     return a.lastTime<b.lastTime?1:-1;
   });
 
-  document.getElementById('chatTotalBadge').textContent = sessions.length;
-  document.getElementById('chatStatTotal').textContent = all.length;
-  document.getElementById('chatStatToday').textContent = all.filter(function(x){return (x.time||'').startsWith(today);}).length;
+  var activeCount=Object.keys(_activeSessions).length;
+  document.getElementById('chatTotalBadge').textContent = activeCount;
+  document.getElementById('chatStatTotal').textContent = activeCount;
+  document.getElementById('chatStatToday').textContent = sessions.length;
 
   var tbody = document.getElementById('chatTbody');
   if(!sessions.length){
-    tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:60px;color:#7a8fa8"><i class="fa fa-comment-dots" style="display:block;font-size:36px;color:#d4a84355;margin-bottom:12px"></i>No chat sessions yet.<br><small>Messages from website chat will appear here.</small></td></tr>';
+    tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:60px;color:#7a8fa8">'
+      +'<i class="fa fa-circle" style="display:block;font-size:28px;color:#d4a84355;margin-bottom:12px"></i>'
+      +'No active visitors right now.<br><small>When someone chats on your website, they will appear here live.</small></td></tr>';
     return;
   }
 
   tbody.innerHTML = sessions.map(function(s,i){
-    var firstMsg=s.msgs[0].question||'';
-    var lastMsg=s.msgs[s.msgs.length-1].question||'';
+    var firstMsg=s.msgs[0]?s.msgs[0].question:'...';
+    var lastMsg=s.msgs[s.msgs.length-1]?s.msgs[s.msgs.length-1].question:'';
     var hasUnread=s.unread>0;
     return '<tr class="'+(hasUnread?'unread':'')+'" style="cursor:pointer" onclick="openThread(\''+s.sid+'\')">'
-      +'<td class="td-num">'+(i+1)+(hasUnread?'<span class="new-tag">'+s.unread+' NEW</span>':'')+'</td>'
+      +'<td class="td-num">'
+        +'<span style="display:inline-block;width:8px;height:8px;background:#4ade80;border-radius:50%;margin-right:5px;box-shadow:0 0 6px #4ade80"></span>'
+        +(i+1)+(hasUnread?'<span class="new-tag">'+s.unread+' NEW</span>':'')
+      +'</td>'
       +'<td>'
         +'<div class="chat-q" style="margin-bottom:3px">'+esc(firstMsg.slice(0,60))+(firstMsg.length>60?'…':'')+'</div>'
         +(s.msgs.length>1?'<div class="chat-a">'+s.msgs.length+' messages · Last: <em>'+esc(lastMsg.slice(0,40))+'</em></div>':'')
@@ -578,6 +586,14 @@ renderChat();
 updateChatNotif();
 
 // ── Firebase real-time listeners ──
+// Presence — who is online right now
+db.ref('presence').on('value', function(snap){
+  _activeSessions={};
+  snap.forEach(function(c){ _activeSessions[c.key]=c.val(); });
+  renderChat();
+  updateChatNotif();
+});
+
 // Chat messages — instant sync from any device
 db.ref('chatMessages').on('value', function(snap){
   var msgs=[];
