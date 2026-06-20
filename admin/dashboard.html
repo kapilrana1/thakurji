@@ -83,6 +83,25 @@ td:last-child{border-right:none}
 .empty-row td{text-align:center;padding:50px;color:#7a8fa8;font-size:13px}
 .empty-row td i{display:block;font-size:32px;color:#d4a84355;margin-bottom:10px}
 .count-info{font-size:12px;color:#7a8fa8;padding:10px 14px;border-top:1px solid #f0f4f8}
+.notif-dot{display:inline-block;width:8px;height:8px;background:#ef4444;border-radius:50%;margin-left:4px;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.notif-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:6px}
+
+/* Chat Tab */
+#chatSection{display:none}
+.chat-tbl-wrap{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:auto}
+.chat-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.chat-tbl thead tr{background:#0b1a2e}
+.chat-tbl thead th{color:#d4a843;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;padding:12px 14px;text-align:left;white-space:nowrap}
+.chat-tbl tbody tr{border-bottom:1px solid #f0f4f8;transition:.1s}
+.chat-tbl tbody tr:nth-child(even){background:#fafbfd}
+.chat-tbl tbody tr.unread{background:#fffbea!important;border-left:3px solid #d4a843}
+.chat-tbl tbody tr:hover{background:#fff8e6}
+.chat-tbl td{padding:11px 14px;vertical-align:top;color:#1e2d40}
+.chat-q{font-weight:600;color:#0b1a2e;font-size:13px}
+.chat-a{font-size:12px;color:#7a8fa8;margin-top:3px;line-height:1.5}
+.new-tag{display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
+
 @media(max-width:900px){
   .sidebar{width:52px;padding:14px 8px}
   .s-logo-text,.nav-item span{display:none}
@@ -100,7 +119,8 @@ td:last-child{border-right:none}
     <div class="s-logo-icon">T</div>
     <div class="s-logo-text">Thakurji<br>Associates<small>Admin</small></div>
   </div>
-  <a class="nav-item active" href="#"><i class="fa fa-table"></i><span>Queries</span></a>
+  <a class="nav-item active" id="navForm" href="#" onclick="switchTab('form',event)"><i class="fa fa-table"></i><span>Form Queries</span></a>
+  <a class="nav-item" id="navChat" href="#" onclick="switchTab('chat',event)"><i class="fa fa-comment-dots"></i><span>Chat Queries</span> <span class="notif-dot" id="chatNotif" style="display:none"></span></a>
   <a class="nav-item" href="../index.html" target="_blank"><i class="fa fa-globe"></i><span>View Website</span></a>
   <a class="nav-item logout" href="#" onclick="logout()"><i class="fa fa-right-from-bracket"></i><span>Logout</span></a>
 </div>
@@ -148,8 +168,30 @@ td:last-child{border-right:none}
     <button class="btn-reset" onclick="resetFilters()"><i class="fa fa-rotate-left"></i> Reset</button>
   </div>
 
+  <!-- Chat Section -->
+  <div id="chatSection">
+    <div class="header">
+      <h1><i class="fa fa-comment-dots" style="color:#d4a843;font-size:16px"></i> Chat Queries <span class="badge" id="chatTotalBadge">0</span></h1>
+      <div class="header-right">
+        <button class="btn-clear" onclick="clearAllChat()"><i class="fa fa-trash"></i> Clear All</button>
+      </div>
+    </div>
+    <div class="chat-tbl-wrap">
+      <table class="chat-tbl">
+        <thead><tr>
+          <th style="width:40px">#</th>
+          <th>User Question</th>
+          <th>Bot Answer</th>
+          <th>Date &amp; Time</th>
+          <th style="width:80px">Action</th>
+        </tr></thead>
+        <tbody id="chatTbody"></tbody>
+      </table>
+    </div>
+  </div>
+
   <!-- Table -->
-  <div class="tbl-wrap">
+  <div class="tbl-wrap" id="formSection">
     <table id="mainTable">
       <thead>
         <tr>
@@ -287,8 +329,71 @@ function exportCSV(){
 
 function esc(s){ var d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
 
+// ── TAB SWITCHING ──
+var currentTab = 'form';
+function switchTab(tab, e){
+  if(e) e.preventDefault();
+  currentTab = tab;
+  document.getElementById('navForm').classList.toggle('active', tab==='form');
+  document.getElementById('navChat').classList.toggle('active', tab==='chat');
+  document.getElementById('formSection').style.display = tab==='form' ? '' : 'none';
+  document.getElementById('chatSection').style.display = tab==='chat' ? '' : 'none';
+  if(tab==='chat'){ markChatRead(); renderChat(); }
+}
+
+// ── CHAT QUERIES ──
+function getCQ(){ return JSON.parse(localStorage.getItem('ta_chat_queries')||'[]'); }
+function setCQ(q){ localStorage.setItem('ta_chat_queries', JSON.stringify(q)); }
+
+function markChatRead(){
+  var q = getCQ().map(function(x){ x.read=true; return x; });
+  setCQ(q);
+  document.getElementById('chatNotif').style.display='none';
+}
+
+function updateChatNotif(){
+  var unread = getCQ().filter(function(x){ return !x.read; }).length;
+  var dot = document.getElementById('chatNotif');
+  dot.style.display = unread>0 ? 'inline-block' : 'none';
+}
+
+function renderChat(){
+  var all = getCQ().slice().reverse();
+  document.getElementById('chatTotalBadge').textContent = all.length;
+  var tbody = document.getElementById('chatTbody');
+  if(!all.length){
+    tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:50px;color:#7a8fa8"><i class="fa fa-comment-dots" style="display:block;font-size:32px;color:#d4a84355;margin-bottom:10px"></i>No chat queries yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = all.map(function(x,i){
+    return '<tr class="'+(x.read?'':'unread')+'">'
+      +'<td class="td-num">'+(i+1)+(x.read?'':'<span class="new-tag">NEW</span>')+'</td>'
+      +'<td><div class="chat-q">'+esc(x.question||'')+'</div></td>'
+      +'<td><div class="chat-a">'+esc(x.answer||'')+'</div></td>'
+      +'<td class="td-time">'+esc(x.time||'')+'</td>'
+      +'<td><button class="del-btn" onclick="delCQ(\''+x.id+'\')"><i class="fa fa-trash"></i> Delete</button></td>'
+      +'</tr>';
+  }).join('');
+}
+
+function delCQ(id){
+  if(!confirm('Delete this chat query?')) return;
+  setCQ(getCQ().filter(function(x){ return x.id!==id; }));
+  renderChat();
+  updateChatNotif();
+}
+
+function clearAllChat(){
+  if(!confirm('Delete ALL chat queries?')) return;
+  setCQ([]);
+  renderChat();
+  updateChatNotif();
+}
+
 render();
-setInterval(render, 10000);
+renderChat();
+updateChatNotif();
+setInterval(function(){ render(); renderChat(); updateChatNotif(); }, 8000);
 </script>
 </body>
 </html>
