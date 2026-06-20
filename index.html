@@ -408,15 +408,56 @@
   .footer-bottom p{font-size:11px;color:rgba(255,255,255,.25)}
   .footer-bottom a{color:var(--gold)}
 
-  /* ── WHATSAPP ────────────────────────────────── */
-  .wa-btn{
-    position:fixed;bottom:20px;right:16px;z-index:999;
-    width:52px;height:52px;background:#25d366;border-radius:50%;
-    display:flex;align-items:center;justify-content:center;
-    font-size:24px;color:#fff;box-shadow:0 4px 18px rgba(37,211,102,.4);
-    animation:wafloat 3s ease-in-out infinite;transition:var(--tr)
+  /* ── HELP ASSISTANT ─────────────────────────── */
+  #helpBtn{
+    position:fixed;bottom:20px;right:20px;z-index:1000;
+    width:54px;height:54px;background:linear-gradient(135deg,#d4a843,#f0c050);
+    border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-size:24px;color:#0b1a2e;box-shadow:0 6px 24px rgba(212,168,67,.5);
+    cursor:pointer;animation:wafloat 3s ease-in-out infinite;transition:.2s
   }
-  @keyframes wafloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  #helpBtn:hover{transform:scale(1.08)}
+  @keyframes wafloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  #chatBox{
+    position:fixed;bottom:84px;right:20px;z-index:1000;
+    width:340px;max-height:480px;
+    background:#0b1a2e;border:1px solid rgba(212,168,67,.3);
+    border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.5);
+    display:none;flex-direction:column;overflow:hidden;font-family:'Poppins',sans-serif
+  }
+  #chatBox.open{display:flex}
+  #chatHead{
+    background:linear-gradient(135deg,#0f2240,#1a3a5c);
+    padding:14px 16px;display:flex;align-items:center;justify-content:space-between;
+    border-bottom:1px solid rgba(212,168,67,.2);color:#fff
+  }
+  #chatMsgs{
+    flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;
+    min-height:200px;max-height:280px
+  }
+  #chatMsgs::-webkit-scrollbar{width:4px}
+  #chatMsgs::-webkit-scrollbar-thumb{background:rgba(212,168,67,.3);border-radius:2px}
+  .cm-bot,.cm-user{max-width:85%;padding:10px 14px;border-radius:14px;font-size:13px;line-height:1.5}
+  .cm-bot{background:rgba(212,168,67,.12);color:#fff;border-bottom-left-radius:4px;align-self:flex-start;border:1px solid rgba(212,168,67,.2)}
+  .cm-user{background:linear-gradient(135deg,#d4a843,#f0c050);color:#0b1a2e;font-weight:600;border-bottom-right-radius:4px;align-self:flex-end}
+  #quickReplies{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px}
+  .qr-btn{
+    background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.3);
+    color:#d4a843;font-size:11px;padding:5px 11px;border-radius:20px;
+    cursor:pointer;transition:.15s;font-family:'Poppins',sans-serif
+  }
+  .qr-btn:hover{background:#d4a843;color:#0b1a2e}
+  #chatInputRow{display:flex;padding:10px 12px;gap:8px;border-top:1px solid rgba(212,168,67,.15)}
+  #chatInput{
+    flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(212,168,67,.2);
+    border-radius:22px;padding:8px 14px;color:#fff;font-size:13px;
+    font-family:'Poppins',sans-serif;outline:none
+  }
+  #chatInput::placeholder{color:rgba(255,255,255,.4)}
+  #chatInputRow button{
+    width:36px;height:36px;background:#d4a843;border:none;border-radius:50%;
+    color:#0b1a2e;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0
+  }
 
   /* ── BACK TO TOP ─────────────────────────────── */
   .btt{
@@ -594,6 +635,7 @@
       <a href="#"><i class="fab fa-instagram"></i></a>
       <a href="#"><i class="fab fa-linkedin-in"></i></a>
       <a href="https://youtube.com/@thakurjitaxgyan2672?si=nNyWD2OHOUQsEZ8N" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
+      <a href="https://wa.me/917417387837" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i></a>
     </div>
   </div>
 </div>
@@ -1238,8 +1280,28 @@
   </div>
 </footer>
 
-<!-- WhatsApp -->
-<a href="https://wa.me/917417387837" class="wa-btn" target="_blank" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+<!-- Help Assistant -->
+<div id="helpBtn" onclick="toggleChat()" aria-label="Help Assistant">
+  <i class="fa fa-comment-dots"></i>
+</div>
+<div id="chatBox">
+  <div id="chatHead">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;background:#d4a843;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#0b1a2e;font-size:15px">T</div>
+      <div>
+        <div style="font-weight:700;font-size:14px">Thakurji Assistant</div>
+        <div style="font-size:11px;opacity:.8;display:flex;align-items:center;gap:4px"><span style="width:7px;height:7px;background:#4ade80;border-radius:50%;display:inline-block"></span> Online</div>
+      </div>
+    </div>
+    <span onclick="toggleChat()" style="cursor:pointer;font-size:18px;opacity:.7">&times;</span>
+  </div>
+  <div id="chatMsgs"></div>
+  <div id="quickReplies"></div>
+  <div id="chatInputRow">
+    <input id="chatInput" placeholder="Apna sawaal likhein..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+    <button onclick="sendMsg()"><i class="fa fa-paper-plane"></i></button>
+  </div>
+</div>
 <!-- Back to Top -->
 <button class="btt" id="btt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa fa-chevron-up"></i></button>
 
@@ -1391,6 +1453,128 @@
       if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'});}
     });
   });
+
+  // ── HELP ASSISTANT ────────────────────────────
+  var chatOpen=false;
+  var chatStarted=false;
+  var WA='https://wa.me/917417387837?text=';
+
+  var KB=[
+    {k:['itr','income tax','return','filing','file'],
+     a:'ITR-1 se ITR-7 tak sab file karte hain. Maximum refund ke liye deductions claim karte hain. Documents chahiye: Form 16, Aadhaar, PAN. Koi bhi sawaal ho toh WhatsApp karein!',
+     q:['ITR charges kya hain?','Kitne din lagte hain?','WhatsApp par poochhen']},
+    {k:['gst','gstr','registration','return'],
+     a:'GST Registration se lekar GSTR-1, 3B, 9 sab file karte hain. Zero penalty guarantee. Same-day processing available hai.',
+     q:['GST registration kaise hoti hai?','GSTR filing charges?','WhatsApp par poochhen']},
+    {k:['msme','udyam','udyog aadhaar'],
+     a:'MSME/Udyam Registration instant milti hai. Govt benefits aur subsidies ke liye zaroori hai. Sirf 1-2 din ka kaam hai.',
+     q:['MSME ke fayde kya hain?','WhatsApp par poochhen']},
+    {k:['company','pvt','llp','opc','partnership','incorporate','register'],
+     a:'Pvt Ltd, LLP, OPC, Partnership — sab ka registration karte hain full MCA & ROC compliance ke saath. Done in days!',
+     q:['Company registration charges?','Kitne documents chahiye?','WhatsApp par poochhen']},
+    {k:['tax','planning','save','saving','80c','80d'],
+     a:'Sec 80C/80D ke under legal tax saving options suggest karte hain. Maximum refund ensure karte hain aapke liye.',
+     q:['Tax saving tips','WhatsApp par poochhen']},
+    {k:['charge','fee','price','cost','kitna'],
+     a:'Charges service ke hisaab se alag hote hain. Sabse pehle FREE consultation lete hain aur phir batate hain. Koi hidden charges nahi!',
+     q:['Free consultation book karein','WhatsApp par poochhen']},
+    {k:['address','location','office','kahan','saharanpur'],
+     a:'Office: Hathi Gate, Court Road, Saharanpur - 247001 (UP)\nTiming: Mon-Sat 11 AM – 7 PM, Sunday Off',
+     q:['WhatsApp par poochhen','Call karein']},
+    {k:['time','timing','hours','open','close'],
+     a:'Office hours: Monday to Saturday, 11:00 AM – 7:00 PM. Sunday closed. WhatsApp par 24/7 message kar sakte hain!',
+     q:['WhatsApp par poochhen']},
+  ];
+
+  function toggleChat(){
+    chatOpen=!chatOpen;
+    document.getElementById('chatBox').classList.toggle('open',chatOpen);
+    if(chatOpen && !chatStarted){startChat();}
+  }
+
+  function startChat(){
+    chatStarted=true;
+    addBot('Namaste! 🙏 Main Thakurji Associates ka digital assistant hun. Kaise madad kar sakta hun aapki?');
+    setQuick([
+      'ITR Filing','GST Services','Company Registration',
+      'MSME/Udyam','Tax Planning','Office Address','WhatsApp par poochhen'
+    ]);
+  }
+
+  function addBot(txt){
+    var d=document.createElement('div');
+    d.className='cm-bot';
+    d.innerHTML=txt.replace(/\n/g,'<br>');
+    document.getElementById('chatMsgs').appendChild(d);
+    scrollChat();
+  }
+
+  function addUser(txt){
+    document.getElementById('quickReplies').innerHTML='';
+    var d=document.createElement('div');
+    d.className='cm-user';
+    d.textContent=txt;
+    document.getElementById('chatMsgs').appendChild(d);
+    scrollChat();
+  }
+
+  function scrollChat(){
+    var m=document.getElementById('chatMsgs');
+    m.scrollTop=m.scrollHeight;
+  }
+
+  function setQuick(arr){
+    var qr=document.getElementById('quickReplies');
+    qr.innerHTML='';
+    arr.forEach(function(t){
+      var b=document.createElement('button');
+      b.className='qr-btn';
+      b.textContent=t;
+      b.onclick=function(){handleMsg(t);};
+      qr.appendChild(b);
+    });
+  }
+
+  function handleMsg(txt){
+    addUser(txt);
+    var lower=txt.toLowerCase();
+    if(lower.includes('whatsapp')||lower.includes('call karein')){
+      var waMsg='Namaste, mujhe Thakurji Associates se information chahiye.';
+      addBot('Aapko WhatsApp par redirect kar raha hun... 📲');
+      setTimeout(function(){window.open(WA+encodeURIComponent(waMsg),'_blank');},600);
+      setQuick(['Koi aur sawaal?']);
+      return;
+    }
+    var found=false;
+    for(var i=0;i<KB.length;i++){
+      var entry=KB[i];
+      for(var j=0;j<entry.k.length;j++){
+        if(lower.includes(entry.k[j])){
+          setTimeout(function(e){
+            addBot(e.a);
+            setQuick(e.q);
+          }.bind(null,entry),400);
+          found=true;
+          break;
+        }
+      }
+      if(found)break;
+    }
+    if(!found){
+      setTimeout(function(){
+        addBot('Yeh sawaal expert se poochhna behtar hoga. WhatsApp par directly baat karein — turant reply milega!');
+        setQuick(['WhatsApp par poochhen','ITR Filing','GST Services','Office Address']);
+      },400);
+    }
+  }
+
+  function sendMsg(){
+    var inp=document.getElementById('chatInput');
+    var txt=inp.value.trim();
+    if(!txt)return;
+    inp.value='';
+    handleMsg(txt);
+  }
 </script>
 </body>
 </html>
