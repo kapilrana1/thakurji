@@ -88,7 +88,6 @@ td:last-child{border-right:none}
 .notif-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:6px}
 
 /* Chat Tab */
-#chatSection{display:none}
 .chat-tbl-wrap{background:#fff;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);overflow:auto}
 .chat-tbl{width:100%;border-collapse:collapse;font-size:13px}
 .chat-tbl thead tr{background:#0b1a2e}
@@ -337,8 +336,8 @@ function switchTab(tab, e){
   currentTab = tab;
   document.getElementById('navForm').classList.toggle('active', tab==='form');
   document.getElementById('navChat').classList.toggle('active', tab==='chat');
-  document.getElementById('formSection').style.display = tab==='form' ? '' : 'none';
-  document.getElementById('chatSection').style.display = tab==='chat' ? '' : 'none';
+  document.getElementById('formSection').style.display = tab==='form' ? 'block' : 'none';
+  document.getElementById('chatSection').style.display = tab==='chat' ? 'block' : 'none';
   if(tab==='chat'){ markChatRead(); renderChat(); }
 }
 
