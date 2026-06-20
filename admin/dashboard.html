@@ -285,9 +285,27 @@ td:last-child{border-right:none}
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 if(sessionStorage.getItem('ta_admin')!=='1') location.href='index.html';
 function logout(){ sessionStorage.removeItem('ta_admin'); location.href='index.html'; }
+
+// ── FIREBASE ──
+firebase.initializeApp({
+  apiKey:"AIzaSyCaK_S3de0X1Vz9cN2-A_7EvXCmCGZsMG0",
+  authDomain:"thakurji-associates-4c58c.firebaseapp.com",
+  databaseURL:"https://thakurji-associates-4c58c-default-rtdb.firebaseio.com",
+  projectId:"thakurji-associates-4c58c",
+  storageBucket:"thakurji-associates-4c58c.firebasestorage.app",
+  messagingSenderId:"305366898471",
+  appId:"1:305366898471:web:aada20c3a84ba84f773b02"
+});
+var db = firebase.database();
+
+// In-memory stores updated by Firebase listeners
+var _allChats = [];
+var _allReplies = [];
 
 var sortCol='time', sortDir=-1;
 
@@ -415,18 +433,18 @@ function switchTab(tab, e){
   if(tab==='chat'){ markChatRead(); renderChat(); }
 }
 
-// ── CHAT QUERIES ──
-function getCQ(){ return JSON.parse(localStorage.getItem('ta_chat_queries')||'[]'); }
-function setCQ(q){ localStorage.setItem('ta_chat_queries', JSON.stringify(q)); }
+// ── CHAT QUERIES (Firebase) ──
+function getCQ(){ return _allChats; }
 
 function markChatRead(){
-  var q = getCQ().map(function(x){ x.read=true; return x; });
-  setCQ(q);
+  _allChats.forEach(function(x){
+    if(!x.read) db.ref('chatMessages/'+x.id).update({read:true});
+  });
   document.getElementById('chatNotif').style.display='none';
 }
 
 function updateChatNotif(){
-  var unread = getCQ().filter(function(x){ return !x.read; }).length;
+  var unread = _allChats.filter(function(x){ return !x.read; }).length;
   var dot = document.getElementById('chatNotif');
   dot.style.display = unread>0 ? 'inline-block' : 'none';
 }
@@ -483,15 +501,18 @@ function openThread(sid){
   buildThread();
   document.getElementById('fullChatView').classList.add('open');
   document.getElementById('adminReplyTxt').focus();
-  // Mark as read
-  var q=getCQ().map(function(x){if((x.sessionId||'unknown')===sid)x.read=true;return x;});
-  setCQ(q); updateChatNotif();
+  // Mark as read in Firebase
+  _allChats.forEach(function(x){
+    if((x.sessionId||'unknown')===sid && !x.read)
+      db.ref('chatMessages/'+x.id).update({read:true});
+  });
+  updateChatNotif();
 }
 
 function buildThread(){
   var sid=activeSession;
-  var allMsgs=getCQ().filter(function(x){return (x.sessionId||'unknown')===sid;});
-  var adminReplies=JSON.parse(localStorage.getItem('ta_admin_replies')||'[]').filter(function(r){return r.sessionId===sid;});
+  var allMsgs=_allChats.filter(function(x){return (x.sessionId||'unknown')===sid;});
+  var adminReplies=_allReplies.filter(function(r){return r.sessionId===sid;});
   var combined=[];
   allMsgs.forEach(function(m){combined.push({type:'user',text:m.question,reply:m.answer,time:m.time});});
   adminReplies.forEach(function(r){combined.push({type:'admin',text:r.message,time:r.time});});
@@ -532,23 +553,17 @@ function closeChat(){
 function sendAdminReply(){
   var txt=document.getElementById('adminReplyTxt').value.trim();
   if(!txt||!activeSession) return;
-  var replies=JSON.parse(localStorage.getItem('ta_admin_replies')||'[]');
-  replies.push({
-    id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+  db.ref('adminReplies').push({
     sessionId:activeSession,
     message:txt,
     time:new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})
   });
-  localStorage.setItem('ta_admin_replies',JSON.stringify(replies));
   document.getElementById('adminReplyTxt').value='';
-  buildThread();
 }
 
 function delCQ(id){
-  if(!confirm('Delete this chat query?')) return;
-  setCQ(getCQ().filter(function(x){ return x.id!==id; }));
-  renderChat();
-  updateChatNotif();
+  if(!confirm('Delete this chat message?')) return;
+  db.ref('chatMessages/'+id).remove();
 }
 
 function clearAllChat(){
@@ -562,28 +577,31 @@ render();
 renderChat();
 updateChatNotif();
 
-// Poll every 3 seconds
-setInterval(function(){
-  render();
-  // If full chat view open, refresh thread for new visitor messages
+// ── Firebase real-time listeners ──
+// Chat messages — instant sync from any device
+db.ref('chatMessages').on('value', function(snap){
+  var msgs=[];
+  snap.forEach(function(c){ var v=c.val(); v.id=c.key; msgs.push(v); });
+  _allChats=msgs;
+  renderChat();
+  updateChatNotif();
   if(activeSession && document.getElementById('fullChatView').classList.contains('open')){
     buildThread();
   }
-  renderChat();
-  updateChatNotif();
-}, 3000);
+});
 
-// Instant cross-tab sync: fires when another tab changes localStorage
-window.addEventListener('storage', function(e){
-  if(e.key==='ta_chat_queries'||e.key==='ta_admin_replies'||e.key==='ta_queries'){
-    renderChat();
-    updateChatNotif();
-    render();
-    if(activeSession && document.getElementById('fullChatView').classList.contains('open')){
-      buildThread();
-    }
+// Admin replies — rebuild thread when new reply saved
+db.ref('adminReplies').on('value', function(snap){
+  var reps=[];
+  snap.forEach(function(c){ var v=c.val(); v.id=c.key; reps.push(v); });
+  _allReplies=reps;
+  if(activeSession && document.getElementById('fullChatView').classList.contains('open')){
+    buildThread();
   }
 });
+
+// Form queries — still localStorage, poll every 5s
+setInterval(function(){ render(); }, 5000);
 </script>
 </body>
 </html>

@@ -1313,6 +1313,8 @@
 <button class="btt" id="btt" aria-label="Back to top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa fa-chevron-up"></i></button>
 
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
   // AOS
   AOS.init({duration:650,once:true,offset:50,easing:'ease-out'});
@@ -1461,6 +1463,18 @@
     });
   });
 
+  // ── FIREBASE ──────────────────────────────────
+  var _fbApp = firebase.initializeApp({
+    apiKey:"AIzaSyCaK_S3de0X1Vz9cN2-A_7EvXCmCGZsMG0",
+    authDomain:"thakurji-associates-4c58c.firebaseapp.com",
+    databaseURL:"https://thakurji-associates-4c58c-default-rtdb.firebaseio.com",
+    projectId:"thakurji-associates-4c58c",
+    storageBucket:"thakurji-associates-4c58c.firebasestorage.app",
+    messagingSenderId:"305366898471",
+    appId:"1:305366898471:web:aada20c3a84ba84f773b02"
+  });
+  var db = firebase.database();
+
   // ── HELP ASSISTANT ────────────────────────────
   var chatOpen=false;
   var chatStarted=false;
@@ -1522,6 +1536,8 @@
     scrollChat();
   }
 
+  var lastChatId=null;
+
   function addUser(txt){
     var old=document.getElementById('inlineQR'); if(old){ old.remove(); }
     var d=document.createElement('div');
@@ -1529,28 +1545,21 @@
     d.textContent=txt;
     document.getElementById('chatMsgs').appendChild(d);
     scrollChat();
-    // Save EVERY user message immediately — no filter
-    var chats=JSON.parse(localStorage.getItem('ta_chat_queries')||'[]');
-    chats.push({
-      id:Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+    // Push to Firebase Realtime Database
+    var ref=db.ref('chatMessages').push();
+    lastChatId=ref.key;
+    ref.set({
       sessionId:chatSessionId,
       question:txt,
       answer:'',
       time:new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
       read:false
     });
-    localStorage.setItem('ta_chat_queries',JSON.stringify(chats));
-    lastChatId=chats[chats.length-1].id;
   }
 
-  var lastChatId=null;
-
   function updateLastAnswer(ans){
-    var chats=JSON.parse(localStorage.getItem('ta_chat_queries')||'[]');
-    for(var i=chats.length-1;i>=0;i--){
-      if(chats[i].id===lastChatId){chats[i].answer=ans;break;}
-    }
-    localStorage.setItem('ta_chat_queries',JSON.stringify(chats));
+    if(!lastChatId) return;
+    db.ref('chatMessages/'+lastChatId).update({answer:ans});
   }
 
   function scrollChat(){
@@ -1641,29 +1650,26 @@
     handleMsg(txt);
   }
 
-  // Poll for admin replies every 4 seconds
-  setInterval(function(){
+  // Real-time listener for admin replies (Firebase)
+  db.ref('adminReplies').orderByChild('sessionId').equalTo(chatSessionId).on('child_added',function(snap){
     if(!chatStarted) return;
-    var replies=JSON.parse(localStorage.getItem('ta_admin_replies')||'[]');
-    replies.forEach(function(r){
-      if(r.sessionId===chatSessionId && !shownReplies[r.id]){
-        shownReplies[r.id]=true;
-        var d=document.createElement('div');
-        d.className='cm-bot';
-        d.innerHTML='<strong style="color:#d4a843;font-size:11px;display:block;margin-bottom:4px">👤 Thakurji Team</strong>'+r.message.replace(/\n/g,'<br>');
-        document.getElementById('chatMsgs').appendChild(d);
-        scrollChat();
-        if(!chatOpen){
-          document.getElementById('helpBtn').style.animation='none';
-          document.getElementById('helpBtn').style.background='#ef4444';
-          setTimeout(function(){
-            document.getElementById('helpBtn').style.background='';
-            document.getElementById('helpBtn').style.animation='';
-          },3000);
-        }
-      }
-    });
-  },4000);
+    var r=snap.val(); var rid=snap.key;
+    if(shownReplies[rid]) return;
+    shownReplies[rid]=true;
+    var d=document.createElement('div');
+    d.className='cm-bot';
+    d.innerHTML='<strong style="color:#d4a843;font-size:11px;display:block;margin-bottom:4px">👤 Thakurji Team</strong>'+(r.message||'').replace(/\n/g,'<br>');
+    document.getElementById('chatMsgs').appendChild(d);
+    scrollChat();
+    if(!chatOpen){
+      document.getElementById('helpBtn').style.animation='none';
+      document.getElementById('helpBtn').style.background='#ef4444';
+      setTimeout(function(){
+        document.getElementById('helpBtn').style.background='';
+        document.getElementById('helpBtn').style.animation='';
+      },3000);
+    }
+  });
 </script>
 </body>
 </html>
