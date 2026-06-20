@@ -179,7 +179,7 @@
   @keyframes fadeup{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
   .hero-stats{display:flex;gap:clamp(16px,2.5vw,36px);margin-top:28px;flex-wrap:nowrap;opacity:0;animation:fadeup .7s ease .8s forwards;padding-top:20px;border-top:1px solid rgba(255,255,255,.07)}
   .hstat strong{display:block;font-size:clamp(22px,2.5vw,36px);font-weight:800;color:var(--gold);line-height:1}
-  .hstat span{font-size:clamp(10px,1vw,13px);color:rgba(255,255,255,.45);letter-spacing:.5px}
+  .hstat span{font-size:clamp(11px,1vw,13px);color:rgba(255,255,255,.45);letter-spacing:.5px;white-space:nowrap}
 
   /* ── HERO RIGHT SLIDER ────────────────────────── */
   .hero-visual{opacity:0;animation:fadeup .8s ease .9s forwards}
@@ -513,8 +513,8 @@
     .topbar{display:flex;height:38px}
     #nav{top:38px;padding:14px 0}
     #nav.scrolled{top:0}
-    #hero{padding:140px 0 80px;align-items:center;min-height:100svh}
-    .hero-inner{grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    #hero{padding:100px 0 60px;align-items:center;min-height:100svh}
+    .hero-inner{grid-template-columns:1fr 1fr;gap:40px;align-items:center}
     .hero-btns{flex-direction:row}
     .hero-btns .btn{width:auto}
     .nav-links{display:flex;flex-direction:row;position:static;background:none;border:none;padding:0;gap:24px}
@@ -541,7 +541,7 @@
      RESPONSIVE — Desktop (≥1024px)
   ═══════════════════════════════════════════════ */
   @media(min-width:1024px){
-    .hero-inner{grid-template-columns:1fr 1.2fr}
+    .hero-inner{grid-template-columns:1fr 1fr}
     .srv-grid{grid-template-columns:repeat(3,1fr);gap:24px}
     .srv-card:hover{transform:translateY(-6px);box-shadow:0 16px 48px rgba(11,26,46,.13);border-color:rgba(212,168,67,.2)}
     .srv-card:hover::before{transform:scaleX(1)}
@@ -566,7 +566,7 @@
   @media(min-width:1280px){
     .hero-content{max-width:100%}
     .srv-grid{grid-template-columns:repeat(3,1fr)}
-    .hero-inner{grid-template-columns:1fr 1.15fr}
+    .hero-inner{grid-template-columns:1fr 1fr}
   }
 
   /* ── Apple / High DPI ───────────────────────── */
