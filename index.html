@@ -115,9 +115,11 @@
   }
   .nb-badge span{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#d4a843;text-transform:uppercase}
   @keyframes nbPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(212,168,67,.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(212,168,67,0)}}
-  .nb-ticker{flex:1;overflow:hidden;position:relative}
-  .nb-ticker-inner{display:inline-block;white-space:nowrap;font-size:13px;font-weight:600;color:#e8d9a8;letter-spacing:.3px;position:absolute;top:50%;transform:translateY(-50%)}
-  .nb-ticker-inner i{color:#d4a843;margin-right:8px}
+  .nb-ticker{flex:1;overflow:hidden}
+  .nb-ticker-track{display:flex;animation:nbTick 28s linear infinite;will-change:transform}
+  .nb-copy{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-width:100vw;font-size:13px;font-weight:600;color:#e8d9a8;letter-spacing:.3px;flex-shrink:0;padding-right:60px}
+  .nb-copy i{color:#d4a843;font-size:12px}
+  @keyframes nbTick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .nb-close{
     flex-shrink:0;width:40px;height:100%;display:flex;align-items:center;justify-content:center;
     background:none;border:none;border-left:1px solid rgba(212,168,67,.2);
@@ -692,7 +694,10 @@
 <div id="noticeBanner">
   <div class="nb-badge"><div class="nb-dot"></div><span>Notice</span></div>
   <div class="nb-ticker">
-    <div class="nb-ticker-inner" id="nbTickerInner"><i class="fa fa-bullhorn"></i> <span id="noticeBannerText"></span></div>
+    <div class="nb-ticker-track" id="nbTrack">
+      <div class="nb-copy"><i class="fa fa-bullhorn"></i><span id="noticeBannerText"></span></div>
+      <div class="nb-copy"><i class="fa fa-bullhorn"></i><span id="noticeBannerText2"></span></div>
+    </div>
   </div>
   <button class="nb-close" onclick="dismissNotice()" title="Close"><i class="fa fa-xmark"></i></button>
 </div>
@@ -1732,9 +1737,9 @@
     }
     if(_noticeDismissed === d.text){ return; }
     document.getElementById('noticeBannerText').textContent = d.text;
+    document.getElementById('noticeBannerText2').textContent = d.text;
     banner.classList.add('show');
     document.body.classList.add('has-notice');
-    startTicker();
   });
   function dismissNotice(){
     var banner = document.getElementById('noticeBanner');
@@ -1745,38 +1750,7 @@
     _tickerRunning = false;
   }
 
-  var _tickerSession = 0;
-  function stopTicker(){
-    _tickerSession++;
-    var inner = document.getElementById('nbTickerInner');
-    if(inner){ inner.style.transition = 'none'; }
-  }
-  function startTicker(){
-    stopTicker();
-    var session = _tickerSession;
-    setTimeout(function(){
-      if(session !== _tickerSession) return;
-      var inner  = document.getElementById('nbTickerInner');
-      var ticker = inner.parentElement;
-      function run(){
-        if(session !== _tickerSession) return;
-        var tickerW = ticker.offsetWidth || window.innerWidth;
-        var textW   = inner.scrollWidth  || 300;
-        var dur     = (tickerW + textW) / 75 * 1000;
-        inner.style.transition = 'none';
-        inner.style.left = tickerW + 'px';
-        inner.getBoundingClientRect();
-        inner.style.transition = 'left ' + dur + 'ms linear';
-        inner.style.left = (-textW) + 'px';
-        inner.addEventListener('transitionend', function handler(e){
-          if(e.propertyName !== 'left') return;
-          inner.removeEventListener('transitionend', handler);
-          run();
-        });
-      }
-      run();
-    }, 200);
-  }
+  function stopTicker(){}
 
   // Real-time listener for admin replies (Firebase)
   db.ref('adminReplies').orderByChild('sessionId').equalTo(chatSessionId).on('child_added',function(snap){
