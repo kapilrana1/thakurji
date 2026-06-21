@@ -11,6 +11,22 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Poppins',sans-serif;background:#f0f4f8;min-height:100vh}
 
+/* ── Toast Notification ── */
+#adminToast{
+  position:fixed;bottom:28px;right:28px;z-index:9999;
+  display:flex;align-items:center;gap:12px;
+  padding:14px 20px;border-radius:12px;
+  font-size:13.5px;font-weight:600;color:#fff;
+  box-shadow:0 8px 32px rgba(0,0,0,.22);
+  transform:translateY(80px);opacity:0;
+  transition:all .35s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;min-width:260px;max-width:360px
+}
+#adminToast.show{transform:translateY(0);opacity:1}
+#adminToast .t-icon{font-size:18px;flex-shrink:0}
+#adminToast .t-msg{line-height:1.4}
+#adminToast .t-title{font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;opacity:.75;margin-bottom:2px}
+
 /* ── Sidebar ── */
 .sidebar{position:fixed;top:0;left:0;width:210px;height:100vh;background:#0b1a2e;padding:20px 12px;display:flex;flex-direction:column;gap:3px;z-index:10}
 .s-logo{display:flex;align-items:center;gap:10px;padding:0 8px;margin-bottom:24px}
@@ -314,11 +330,28 @@ td:last-child{border-right:none}
   </div>
 </div>
 
+<div id="adminToast"><span class="t-icon"></span><div class="t-msg"><div class="t-title"></div><div class="t-body"></div></div></div>
+
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 <script>
 if(sessionStorage.getItem('ta_admin')!=='1') location.href='index.html';
 function logout(){ sessionStorage.removeItem('ta_admin'); location.href='index.html'; }
+
+// ── TOAST ──
+var _toastTimer;
+function showToast(title, msg, type){
+  var t=document.getElementById('adminToast');
+  var icons={success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info',warning:'fa-triangle-exclamation'};
+  var colors={success:'#16a34a',error:'#dc2626',info:'#1d4ed8',warning:'#d97706'};
+  t.style.background = colors[type]||colors.info;
+  t.querySelector('.t-icon').innerHTML='<i class="fa '+icons[type]+'" style="color:#fff"></i>';
+  t.querySelector('.t-title').textContent = title;
+  t.querySelector('.t-body').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3500);
+}
 
 // ── FIREBASE ──
 firebase.initializeApp({
@@ -467,15 +500,16 @@ function switchTab(tab, e){
 // ── NOTICE BOARD ──
 function publishNotice(){
   var text = document.getElementById('noticeText').value.trim();
-  if(!text){ alert('Notice text likhein!'); return; }
+  if(!text){ showToast('Missing Content','Please type a notice message first.','warning'); return; }
   var type = document.querySelector('input[name="noticeType"]:checked').value;
   db.ref('siteNotice').set({active:true, text:text, type:type, updatedAt:Date.now()});
-  alert('Notice website pe live ho gayi!');
+  showToast('Notice Published!','Your announcement is now live on the website.','success');
 }
 function clearNotice(){
   db.ref('siteNotice').set({active:false, text:'', type:'gold', updatedAt:Date.now()});
   document.getElementById('noticeText').value='';
   document.getElementById('noticeLive').style.display='none';
+  showToast('Notice Removed','The announcement has been taken off the website.','info');
 }
 db.ref('siteNotice').on('value', function(snap){
   var d = snap.val();
