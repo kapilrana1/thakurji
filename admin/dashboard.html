@@ -384,6 +384,50 @@ td:last-child{border-right:none}
         </div>
       </div>
 
+      <!-- POPUP ALERT -->
+      <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(239,68,68,.18)">
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-circle-exclamation" style="color:#ef4444;margin-right:8px"></i>Website Popup Alert</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:18px">Shows a popup modal to visitors when they open the website</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Title</label>
+            <input id="spTitle" type="text" placeholder="e.g. Important Notice!" maxlength="60"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Message</label>
+            <input id="spMsg" type="text" placeholder="e.g. GST last date is 31 July. File now!" maxlength="150"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Color</label>
+            <select id="spColor" style="width:100%;background:#0b1a2e;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box">
+              <option value="gold">🟡 Gold</option>
+              <option value="red">🔴 Red (Urgent)</option>
+              <option value="green">🟢 Green</option>
+              <option value="blue">🔵 Blue</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Icon</label>
+            <select id="spIcon" style="width:100%;background:#0b1a2e;border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box">
+              <option value="fa-bell">🔔 Bell</option>
+              <option value="fa-triangle-exclamation">⚠️ Alert</option>
+              <option value="fa-fire">🔥 Urgent</option>
+              <option value="fa-clock">⏰ Deadline</option>
+              <option value="fa-gift">🎁 Offer</option>
+              <option value="fa-star">⭐ Important</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onclick="publishPopup()" style="background:#ef4444;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer"><i class="fa fa-circle-exclamation"></i> Show Popup</button>
+          <button onclick="clearPopup()" style="background:rgba(100,100,100,.15);color:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.1);padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer"><i class="fa fa-times"></i> Remove</button>
+        </div>
+      </div>
+
       <!-- HERO MESSAGE -->
       <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(100,180,255,.15)">
         <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-star" style="color:#d4a843;margin-right:8px"></i>Hero Section Message</div>
@@ -617,6 +661,17 @@ function clearNotice(){
   document.getElementById('noticeText').value='';
   document.getElementById('noticeLive').style.display='none';
   showToast('Notice Removed','The announcement has been taken off the website.','info');
+}
+function publishPopup(){
+  var title = document.getElementById('spTitle').value.trim();
+  if(!title){ showToast('Missing Title','Please enter a title for the popup.','warning'); return; }
+  db.ref('sitePopup').set({active:true, title:title, msg:document.getElementById('spMsg').value.trim(), color:document.getElementById('spColor').value, icon:document.getElementById('spIcon').value, updatedAt:Date.now()});
+  showToast('Popup Active!','Popup alert will show to all website visitors.','success');
+}
+function clearPopup(){
+  db.ref('sitePopup').set({active:false});
+  document.getElementById('spTitle').value=''; document.getElementById('spMsg').value='';
+  showToast('Popup Removed','Popup alert has been turned off.','info');
 }
 function publishHeroStrip(){
   var msg = document.getElementById('hsMsg').value.trim();

@@ -94,6 +94,18 @@
   .tb-social{display:flex;gap:12px}
   .tb-social a{color:var(--navy);font-size:13px;transition:var(--tr)}
 
+  /* ── POPUP ALERT ─────────────────────────────── */
+  #sitePopup{display:none;position:fixed;inset:0;z-index:9000;align-items:center;justify-content:center;background:rgba(0,0,0,.55);backdrop-filter:blur(3px);padding:20px;box-sizing:border-box}
+  #sitePopup.show{display:flex;animation:fadeIn .3s ease}
+  .sp-box{background:#0d1e3d;border:1px solid rgba(212,168,67,.35);border-radius:18px;padding:36px 32px 28px;max-width:460px;width:100%;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.5);text-align:center}
+  .sp-icon{width:52px;height:52px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:22px}
+  .sp-title{font-size:17px;font-weight:700;color:#fff;margin-bottom:10px;line-height:1.3}
+  .sp-msg{font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:24px}
+  .sp-close-btn{background:linear-gradient(135deg,#d4a843,#b8882e);color:#0b1a2e;border:none;padding:10px 32px;border-radius:50px;font-weight:700;font-size:13px;cursor:pointer}
+  .sp-dismiss{position:absolute;top:14px;right:16px;background:none;border:none;color:rgba(255,255,255,.35);font-size:18px;cursor:pointer;padding:4px 8px}
+  .sp-dismiss:hover{color:#fff}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
   /* ── NOTICE BANNER ───────────────────────────── */
   #noticeBanner{
     display:none;position:fixed;top:0;left:0;right:0;z-index:1100;height:40px;
@@ -115,11 +127,11 @@
   }
   .nb-badge span{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#d4a843;text-transform:uppercase}
   @keyframes nbPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(212,168,67,.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(212,168,67,0)}}
-  .nb-ticker{flex:1;overflow:hidden}
-  .nb-ticker-track{display:flex;animation:nbTick 28s linear infinite;will-change:transform}
-  .nb-copy{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-width:100vw;font-size:13px;font-weight:600;color:#e8d9a8;letter-spacing:.3px;flex-shrink:0;padding-right:60px}
+  .nb-ticker{flex:1;overflow:hidden;position:relative;height:40px}
+  .nb-ticker-track{position:absolute;top:0;left:0;display:flex;align-items:center;height:40px;animation:nbTick 30s linear infinite}
+  .nb-copy{display:flex;align-items:center;gap:10px;white-space:nowrap;min-width:100vw;font-size:13px;font-weight:600;color:#e8d9a8;letter-spacing:.3px;flex-shrink:0;padding-right:80px}
   .nb-copy i{color:#d4a843;font-size:12px}
-  @keyframes nbTick{from{transform:translateX(50%)}to{transform:translateX(-50%)}}
+  @keyframes nbTick{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
   .nb-close{
     flex-shrink:0;width:40px;height:100%;display:flex;align-items:center;justify-content:center;
     background:none;border:none;border-left:1px solid rgba(212,168,67,.2);
@@ -749,6 +761,17 @@
   </style>
 </head>
 <body>
+
+<!-- POPUP ALERT -->
+<div id="sitePopup">
+  <div class="sp-box">
+    <button class="sp-dismiss" onclick="closePopup()"><i class="fa fa-xmark"></i></button>
+    <div class="sp-icon" id="spIcon"><i id="spIconI" class="fa fa-bell"></i></div>
+    <div class="sp-title" id="spTitle"></div>
+    <div class="sp-msg" id="spMsg"></div>
+    <button class="sp-close-btn" onclick="closePopup()">Got It</button>
+  </div>
+</div>
 
 <!-- NOTICE BANNER -->
 <div id="noticeBanner">
@@ -1814,6 +1837,22 @@
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.js').catch(function(){});
   }
+
+  // ── POPUP ALERT ──
+  var _popupColors={gold:{bg:'rgba(212,168,67,.2)',color:'#d4a843'},red:{bg:'rgba(239,68,68,.2)',color:'#ef4444'},green:{bg:'rgba(34,197,94,.2)',color:'#22c55e'},blue:{bg:'rgba(6,182,212,.2)',color:'#06b6d4'}};
+  function closePopup(){ document.getElementById('sitePopup').classList.remove('show'); }
+  db.ref('sitePopup').on('value', function(snap){
+    var d = snap.val();
+    var el = document.getElementById('sitePopup');
+    if(!d || !d.active || !d.title){ el.classList.remove('show'); return; }
+    var c = _popupColors[d.color]||_popupColors.gold;
+    var icon = document.getElementById('spIcon');
+    icon.style.background = c.bg; icon.style.color = c.color;
+    document.getElementById('spIconI').className = 'fa '+(d.icon||'fa-bell');
+    document.getElementById('spTitle').textContent = d.title;
+    document.getElementById('spMsg').textContent = d.msg||'';
+    el.classList.add('show');
+  });
 
   // ── HERO STRIP ──
   db.ref('heroStrip').on('value', function(snap){
