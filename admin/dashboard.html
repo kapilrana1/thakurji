@@ -307,6 +307,37 @@ td:last-child{border-right:none}
           <div id="noticeLivePreview" style="padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600"></div>
         </div>
       </div>
+
+      <!-- HERO MESSAGE -->
+      <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(100,180,255,.15)">
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-star" style="color:#d4a843;margin-right:8px"></i>Hero Section Message</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:18px">Appears as a glowing pill in the hero section of the homepage</div>
+
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:14px">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Badge Label</label>
+            <input id="heroMsgLabel" type="text" placeholder="e.g. Offer / Alert / New" maxlength="12"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(212,168,67,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Message Text</label>
+            <input id="heroMsgText" type="text" placeholder="e.g. ITR Filing starts at ₹299 only!" maxlength="80"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(212,168,67,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onclick="publishHeroMsg()" style="background:#d4a843;color:#0b1a2e;border:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer"><i class="fa fa-star"></i> Publish on Hero</button>
+          <button onclick="clearHeroMsg()" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer"><i class="fa fa-times"></i> Remove</button>
+        </div>
+        <div id="heroMsgLive" style="display:none;margin-top:16px">
+          <div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:8px">Live Preview:</div>
+          <div style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(212,168,67,.45);border-radius:50px;padding:8px 16px 8px 10px;background:rgba(212,168,67,.08)">
+            <span id="heroMsgLiveBadge" style="background:linear-gradient(135deg,#d4a843,#b8882e);color:#0b1a2e;font-size:9px;font-weight:800;letter-spacing:1.5px;padding:3px 10px;border-radius:50px;text-transform:uppercase"></span>
+            <span id="heroMsgLiveText" style="font-size:13px;font-weight:600;color:#e8d9a8"></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -511,6 +542,29 @@ function clearNotice(){
   document.getElementById('noticeLive').style.display='none';
   showToast('Notice Removed','The announcement has been taken off the website.','info');
 }
+function publishHeroMsg(){
+  var text  = document.getElementById('heroMsgText').value.trim();
+  var label = document.getElementById('heroMsgLabel').value.trim() || 'Notice';
+  if(!text){ showToast('Missing Text','Please type a message for the hero section.','warning'); return; }
+  db.ref('heroMsg').set({active:true, text:text, label:label, updatedAt:Date.now()});
+  showToast('Hero Message Live!','Your message is now showing on the homepage hero.','success');
+}
+function clearHeroMsg(){
+  db.ref('heroMsg').set({active:false, text:'', label:'', updatedAt:Date.now()});
+  document.getElementById('heroMsgText').value='';
+  document.getElementById('heroMsgLabel').value='';
+  document.getElementById('heroMsgLive').style.display='none';
+  showToast('Hero Message Removed','The hero section message has been cleared.','info');
+}
+db.ref('heroMsg').on('value', function(snap){
+  var d = snap.val();
+  if(!d || !d.active || !d.text){ document.getElementById('heroMsgLive').style.display='none'; return; }
+  document.getElementById('heroMsgLiveBadge').textContent = d.label||'Notice';
+  document.getElementById('heroMsgLiveText').textContent  = d.text;
+  document.getElementById('heroMsgLive').style.display = 'block';
+  document.getElementById('heroMsgText').value  = d.text;
+  document.getElementById('heroMsgLabel').value = d.label||'';
+});
 db.ref('siteNotice').on('value', function(snap){
   var d = snap.val();
   if(!d || !d.active || !d.text){ document.getElementById('noticeLive').style.display='none'; return; }
