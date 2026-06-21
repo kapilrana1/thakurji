@@ -308,6 +308,55 @@ td:last-child{border-right:none}
         </div>
       </div>
 
+      <!-- HERO BANNER CARD -->
+      <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(6,182,212,.18)">
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-rectangle-ad" style="color:#06b6d4;margin-right:8px"></i>Hero Banner Card</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:18px">Card-style announcement with title + description above the pill</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Title (Bold)</label>
+            <input id="hbTitle" type="text" placeholder="e.g. GST Last Date: 31 July 2025" maxlength="60"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Description</label>
+            <input id="hbSub" type="text" placeholder="e.g. File now to avoid ₹5000 penalty" maxlength="90"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:18px">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Color</label>
+            <select id="hbColor" style="width:100%;background:#0b1a2e;border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box">
+              <option value="teal">🔵 Teal (Default)</option>
+              <option value="gold">🟡 Gold</option>
+              <option value="green">🟢 Green</option>
+              <option value="red">🔴 Red (Urgent)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Icon</label>
+            <select id="hbIcon" style="width:100%;background:#0b1a2e;border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box">
+              <option value="fa-bolt">⚡ Lightning</option>
+              <option value="fa-fire">🔥 Fire</option>
+              <option value="fa-tag">🏷️ Tag / Offer</option>
+              <option value="fa-clock">⏰ Clock / Deadline</option>
+              <option value="fa-star">⭐ Star</option>
+              <option value="fa-triangle-exclamation">⚠️ Alert</option>
+              <option value="fa-gift">🎁 Gift</option>
+              <option value="fa-percent">% Discount</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onclick="publishHeroBanner()" style="background:#06b6d4;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer"><i class="fa fa-rectangle-ad"></i> Publish Banner</button>
+          <button onclick="clearHeroBanner()" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer"><i class="fa fa-times"></i> Remove</button>
+        </div>
+      </div>
+
       <!-- HERO MESSAGE -->
       <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(100,180,255,.15)">
         <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-star" style="color:#d4a843;margin-right:8px"></i>Hero Section Message</div>
@@ -541,6 +590,21 @@ function clearNotice(){
   document.getElementById('noticeText').value='';
   document.getElementById('noticeLive').style.display='none';
   showToast('Notice Removed','The announcement has been taken off the website.','info');
+}
+function publishHeroBanner(){
+  var title = document.getElementById('hbTitle').value.trim();
+  if(!title){ showToast('Missing Title','Please enter a title for the banner.','warning'); return; }
+  var sub   = document.getElementById('hbSub').value.trim();
+  var color = document.getElementById('hbColor').value;
+  var icon  = document.getElementById('hbIcon').value;
+  db.ref('heroBanner').set({active:true, title:title, sub:sub, color:color, icon:icon, updatedAt:Date.now()});
+  showToast('Banner Published!','Hero banner is now live on the homepage.','success');
+}
+function clearHeroBanner(){
+  db.ref('heroBanner').set({active:false});
+  document.getElementById('hbTitle').value='';
+  document.getElementById('hbSub').value='';
+  showToast('Banner Removed','Hero banner has been cleared.','info');
 }
 function publishHeroMsg(){
   var text  = document.getElementById('heroMsgText').value.trim();
