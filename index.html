@@ -1732,7 +1732,7 @@
     }
     if(_noticeDismissed === d.text){ return; }
     document.getElementById('noticeBannerText').textContent = d.text;
-    var dur = Math.max(10, d.text.length * 0.18);
+    var dur = Math.max(18, d.text.length * 0.35);
     document.getElementById('nbTickerInner').style.animationDuration = dur + 's';
     banner.classList.add('show');
     document.body.classList.add('has-notice');
