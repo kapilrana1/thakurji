@@ -115,10 +115,9 @@
   }
   .nb-badge span{font-size:10px;font-weight:800;letter-spacing:1.5px;color:#d4a843;text-transform:uppercase}
   @keyframes nbPulse{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(212,168,67,.4)}50%{opacity:.7;box-shadow:0 0 0 5px rgba(212,168,67,0)}}
-  .nb-ticker{flex:1;overflow:hidden}
-  .nb-ticker-inner{display:inline-block;white-space:nowrap;font-size:13px;font-weight:600;color:#e8d9a8;letter-spacing:.3px;animation:nbScroll 18s linear infinite}
+  .nb-ticker{flex:1;overflow:hidden;position:relative}
+  .nb-ticker-inner{display:inline-block;white-space:nowrap;font-size:13px;font-weight:600;color:#e8d9a8;letter-spacing:.3px;position:absolute;top:50%;transform:translateY(-50%)}
   .nb-ticker-inner i{color:#d4a843;margin-right:8px}
-  @keyframes nbScroll{0%{transform:translateX(100vw)}100%{transform:translateX(-110%)}}
   .nb-close{
     flex-shrink:0;width:40px;height:100%;display:flex;align-items:center;justify-content:center;
     background:none;border:none;border-left:1px solid rgba(212,168,67,.2);
@@ -1732,10 +1731,9 @@
     }
     if(_noticeDismissed === d.text){ return; }
     document.getElementById('noticeBannerText').textContent = d.text;
-    var dur = Math.max(18, d.text.length * 0.35);
-    document.getElementById('nbTickerInner').style.animationDuration = dur + 's';
     banner.classList.add('show');
     document.body.classList.add('has-notice');
+    startTicker();
   });
   function dismissNotice(){
     var banner = document.getElementById('noticeBanner');
@@ -1743,6 +1741,34 @@
     sessionStorage.setItem('ta_notice_dismissed', txt);
     banner.classList.remove('show');
     document.body.classList.remove('has-notice');
+    _tickerRunning = false;
+  }
+
+  var _tickerRunning = false;
+  var _tickerRAF = null;
+  function startTicker(){
+    if(_tickerRunning) return;
+    _tickerRunning = true;
+    var inner = document.getElementById('nbTickerInner');
+    var ticker = inner.parentElement;
+    function run(){
+      if(!_tickerRunning) return;
+      var tickerW = ticker.offsetWidth;
+      var textW   = inner.offsetWidth;
+      var speed   = 80; // px per second
+      var dist    = tickerW + textW;
+      var dur     = dist / speed * 1000; // ms
+      inner.style.transition = 'none';
+      inner.style.left = tickerW + 'px';
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          inner.style.transition = 'left ' + dur + 'ms linear';
+          inner.style.left = -textW + 'px';
+          setTimeout(run, dur);
+        });
+      });
+    }
+    run();
   }
 
   // Real-time listener for admin replies (Firebase)
