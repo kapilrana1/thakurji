@@ -1745,30 +1745,36 @@
     _tickerRunning = false;
   }
 
-  var _tickerTimer = null;
-  function stopTicker(){ clearTimeout(_tickerTimer); _tickerTimer = null; }
+  var _tickerActive = false;
+  var _tickerHandler = null;
+  function stopTicker(){
+    _tickerActive = false;
+    var inner = document.getElementById('nbTickerInner');
+    if(inner && _tickerHandler){ inner.removeEventListener('transitionend', _tickerHandler); }
+    _tickerHandler = null;
+    if(inner){ inner.style.transition = 'none'; }
+  }
   function startTicker(){
     stopTicker();
     setTimeout(function(){
+      _tickerActive = true;
       var inner  = document.getElementById('nbTickerInner');
       var ticker = inner.parentElement;
       function run(){
+        if(!_tickerActive) return;
         var tickerW = ticker.offsetWidth || window.innerWidth;
-        var textW   = inner.scrollWidth  || 200;
-        var speed   = 75;
-        var dur     = (tickerW + textW) / speed * 1000;
+        var textW   = inner.scrollWidth  || 300;
+        var dur     = (tickerW + textW) / 75 * 1000;
         inner.style.transition = 'none';
         inner.style.left = tickerW + 'px';
-        requestAnimationFrame(function(){
-          requestAnimationFrame(function(){
-            inner.style.transition = 'left ' + dur + 'ms linear';
-            inner.style.left = (-textW) + 'px';
-            _tickerTimer = setTimeout(run, dur + 50);
-          });
-        });
+        inner.getBoundingClientRect(); // force reflow — prevents overlap
+        inner.style.transition = 'left ' + dur + 'ms linear';
+        inner.style.left = (-textW) + 'px';
+        _tickerHandler = function(){ _tickerHandler = null; run(); };
+        inner.addEventListener('transitionend', _tickerHandler, {once:true});
       }
       run();
-    }, 150);
+    }, 200);
   }
 
   // Real-time listener for admin replies (Firebase)
