@@ -869,6 +869,14 @@
           </div>
         </div>
 
+        <!-- Admin-controlled hero announcement 2 (pill style) -->
+        <div id="heroAnnounce2" style="display:none;margin-bottom:10px;animation:fadeup .5s ease">
+          <div class="ha-card" style="background:linear-gradient(135deg,rgba(6,182,212,.12),rgba(6,182,212,.04));border-color:rgba(6,182,212,.45)">
+            <span class="ha-badge" id="heroAnnounce2Badge" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff">Info</span>
+            <span class="ha-text" id="heroAnnounce2Text" style="color:#a5f3fc"></span>
+          </div>
+        </div>
+
         <div class="hero-badge"><i class="fa fa-circle-check"></i>Trusted Since 2017 · CBDT &amp; GST Certified</div>
 
         <!-- Left sliding title+sub block -->
@@ -1852,6 +1860,16 @@
     document.getElementById('spTitle').textContent = d.title;
     document.getElementById('spMsg').textContent = d.msg||'';
     el.classList.add('show');
+  });
+
+  // ── HERO ANNOUNCE 2 ──
+  db.ref('heroMsg2').on('value', function(snap){
+    var d = snap.val();
+    var el = document.getElementById('heroAnnounce2');
+    if(!d || !d.active || !d.text){ el.style.display='none'; return; }
+    document.getElementById('heroAnnounce2Badge').textContent = d.label||'Info';
+    document.getElementById('heroAnnounce2Text').textContent  = d.text;
+    el.style.display = 'block';
   });
 
   // ── HERO STRIP ──

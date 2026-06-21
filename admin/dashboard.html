@@ -458,6 +458,37 @@ td:last-child{border-right:none}
           </div>
         </div>
       </div>
+
+      <!-- HERO MESSAGE 2 (Cyan Pill) -->
+      <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(6,182,212,.2)">
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-circle-info" style="color:#06b6d4;margin-right:8px"></i>Hero Section Message 2</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:18px">Appears as a cyan/teal pill just below the gold pill in the hero section</div>
+
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:12px;margin-bottom:14px">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Badge Label</label>
+            <input id="heroMsg2Label" type="text" placeholder="e.g. Info / Update / New" maxlength="30"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Message Text</label>
+            <input id="heroMsg2Text" type="text" placeholder="e.g. New service: Company Incorporation in 3 days!" maxlength="80"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(6,182,212,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onclick="publishHeroMsg2()" style="background:#06b6d4;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer"><i class="fa fa-circle-info"></i> Publish on Hero</button>
+          <button onclick="clearHeroMsg2()" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer"><i class="fa fa-times"></i> Remove</button>
+        </div>
+        <div id="heroMsg2Live" style="display:none;margin-top:16px">
+          <div style="font-size:10px;letter-spacing:1px;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:8px">Live Preview:</div>
+          <div style="display:inline-flex;align-items:center;gap:10px;border:1px solid rgba(6,182,212,.45);border-radius:50px;padding:8px 16px 8px 10px;background:rgba(6,182,212,.08)">
+            <span id="heroMsg2LiveBadge" style="background:linear-gradient(135deg,#06b6d4,#0891b2);color:#fff;font-size:9px;font-weight:800;letter-spacing:1.5px;padding:3px 10px;border-radius:50px;text-transform:uppercase"></span>
+            <span id="heroMsg2LiveText" style="font-size:13px;font-weight:600;color:#a5f3fc"></span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -699,6 +730,29 @@ function clearHeroBanner(){
   document.getElementById('hbSub').value='';
   showToast('Banner Removed','Hero banner has been cleared.','info');
 }
+function publishHeroMsg2(){
+  var text  = document.getElementById('heroMsg2Text').value.trim();
+  var label = document.getElementById('heroMsg2Label').value.trim() || 'Info';
+  if(!text){ showToast('Missing Text','Please type a message for Hero Message 2.','warning'); return; }
+  db.ref('heroMsg2').set({active:true, text:text, label:label, updatedAt:Date.now()});
+  showToast('Hero Message 2 Live!','Cyan pill is now showing on the homepage hero.','success');
+}
+function clearHeroMsg2(){
+  db.ref('heroMsg2').set({active:false, text:'', label:'', updatedAt:Date.now()});
+  document.getElementById('heroMsg2Text').value='';
+  document.getElementById('heroMsg2Label').value='';
+  document.getElementById('heroMsg2Live').style.display='none';
+  showToast('Hero Message 2 Removed','The cyan pill has been cleared.','info');
+}
+db.ref('heroMsg2').on('value', function(snap){
+  var d = snap.val();
+  if(!d || !d.active || !d.text){ document.getElementById('heroMsg2Live').style.display='none'; return; }
+  document.getElementById('heroMsg2LiveBadge').textContent = d.label||'Info';
+  document.getElementById('heroMsg2LiveText').textContent  = d.text;
+  document.getElementById('heroMsg2Live').style.display = 'block';
+  document.getElementById('heroMsg2Text').value  = d.text;
+  document.getElementById('heroMsg2Label').value = d.label||'';
+});
 function publishHeroMsg(){
   var text  = document.getElementById('heroMsgText').value.trim();
   var label = document.getElementById('heroMsgLabel').value.trim() || 'Notice';
