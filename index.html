@@ -1727,6 +1727,7 @@
     if(!d || !d.active || !d.text){
       banner.classList.remove('show');
       document.body.classList.remove('has-notice');
+      stopTicker();
       return;
     }
     if(_noticeDismissed === d.text){ return; }
@@ -1744,31 +1745,30 @@
     _tickerRunning = false;
   }
 
-  var _tickerRunning = false;
-  var _tickerRAF = null;
+  var _tickerTimer = null;
+  function stopTicker(){ clearTimeout(_tickerTimer); _tickerTimer = null; }
   function startTicker(){
-    if(_tickerRunning) return;
-    _tickerRunning = true;
-    var inner = document.getElementById('nbTickerInner');
-    var ticker = inner.parentElement;
-    function run(){
-      if(!_tickerRunning) return;
-      var tickerW = ticker.offsetWidth;
-      var textW   = inner.offsetWidth;
-      var speed   = 80; // px per second
-      var dist    = tickerW + textW;
-      var dur     = dist / speed * 1000; // ms
-      inner.style.transition = 'none';
-      inner.style.left = tickerW + 'px';
-      requestAnimationFrame(function(){
+    stopTicker();
+    setTimeout(function(){
+      var inner  = document.getElementById('nbTickerInner');
+      var ticker = inner.parentElement;
+      function run(){
+        var tickerW = ticker.offsetWidth || window.innerWidth;
+        var textW   = inner.scrollWidth  || 200;
+        var speed   = 75;
+        var dur     = (tickerW + textW) / speed * 1000;
+        inner.style.transition = 'none';
+        inner.style.left = tickerW + 'px';
         requestAnimationFrame(function(){
-          inner.style.transition = 'left ' + dur + 'ms linear';
-          inner.style.left = -textW + 'px';
-          setTimeout(run, dur);
+          requestAnimationFrame(function(){
+            inner.style.transition = 'left ' + dur + 'ms linear';
+            inner.style.left = (-textW) + 'px';
+            _tickerTimer = setTimeout(run, dur + 50);
+          });
         });
-      });
-    }
-    run();
+      }
+      run();
+    }, 150);
   }
 
   // Real-time listener for admin replies (Firebase)
