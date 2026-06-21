@@ -308,6 +308,33 @@ td:last-child{border-right:none}
         </div>
       </div>
 
+      <!-- HERO STRIP -->
+      <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(139,92,246,.2)">
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-pen-fancy" style="color:#a78bfa;margin-right:8px"></i>Hero Strip</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.4);margin-bottom:18px">Purple accent strip — label + longer message text</div>
+        <div style="display:grid;grid-template-columns:80px 1fr 2fr;gap:12px;margin-bottom:18px;align-items:end">
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Emoji</label>
+            <input id="hsEmoji" type="text" placeholder="📢" maxlength="2" value="📢"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(139,92,246,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:18px;font-family:inherit;box-sizing:border-box;text-align:center"/>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Label</label>
+            <input id="hsLabel" type="text" placeholder="e.g. Important / Update / Alert" maxlength="20"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(139,92,246,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,.45);text-transform:uppercase;display:block;margin-bottom:7px">Message</label>
+            <input id="hsMsg" type="text" placeholder="e.g. New ITR forms released for FY 2024-25. Update your documents!" maxlength="120"
+              style="width:100%;background:#0b1a2e;border:1px solid rgba(139,92,246,.25);border-radius:8px;padding:10px 12px;color:#fff;font-size:13px;font-family:inherit;box-sizing:border-box"/>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <button onclick="publishHeroStrip()" style="background:#7c3aed;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer"><i class="fa fa-pen-fancy"></i> Publish Strip</button>
+          <button onclick="clearHeroStrip()" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:10px 18px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer"><i class="fa fa-times"></i> Remove</button>
+        </div>
+      </div>
+
       <!-- HERO BANNER CARD -->
       <div style="margin-top:24px;background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(6,182,212,.18)">
         <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px"><i class="fa fa-rectangle-ad" style="color:#06b6d4;margin-right:8px"></i>Hero Banner Card</div>
@@ -590,6 +617,17 @@ function clearNotice(){
   document.getElementById('noticeText').value='';
   document.getElementById('noticeLive').style.display='none';
   showToast('Notice Removed','The announcement has been taken off the website.','info');
+}
+function publishHeroStrip(){
+  var msg = document.getElementById('hsMsg').value.trim();
+  if(!msg){ showToast('Missing Message','Please enter a message for the strip.','warning'); return; }
+  db.ref('heroStrip').set({active:true, emoji:document.getElementById('hsEmoji').value||'📢', label:document.getElementById('hsLabel').value.trim()||'Update', msg:msg, updatedAt:Date.now()});
+  showToast('Strip Published!','Hero strip is now live on the homepage.','success');
+}
+function clearHeroStrip(){
+  db.ref('heroStrip').set({active:false});
+  document.getElementById('hsMsg').value=''; document.getElementById('hsLabel').value='';
+  showToast('Strip Removed','Hero strip has been cleared.','info');
 }
 function publishHeroBanner(){
   var title = document.getElementById('hbTitle').value.trim();
