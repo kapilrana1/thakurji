@@ -94,6 +94,25 @@
   .tb-social{display:flex;gap:12px}
   .tb-social a{color:var(--navy);font-size:13px;transition:var(--tr)}
 
+  /* ── NOTICE BANNER ───────────────────────────── */
+  #noticeBanner{
+    display:none;position:fixed;top:0;left:0;right:0;z-index:1100;
+    padding:9px 20px;text-align:center;font-size:13px;font-weight:600;
+    letter-spacing:.3px;line-height:1.4;
+    animation:slideDown .4s ease
+  }
+  #noticeBanner.show{display:flex;align-items:center;justify-content:center;gap:10px}
+  #noticeBanner .nb-close{
+    position:absolute;right:14px;top:50%;transform:translateY(-50%);
+    background:none;border:none;font-size:16px;cursor:pointer;
+    opacity:.7;line-height:1;padding:0;color:inherit
+  }
+  #noticeBanner .nb-close:hover{opacity:1}
+  @keyframes slideDown{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+  body.has-notice #nav{top:38px}
+  body.has-notice .topbar{top:38px}
+  @media(max-width:768px){#noticeBanner{font-size:12px;padding:8px 36px 8px 14px;text-align:left}}
+
   /* ── NAVBAR ──────────────────────────────────── */
   #nav{
     position:fixed;top:0;left:0;right:0;z-index:1000;
@@ -649,6 +668,13 @@
   </style>
 </head>
 <body>
+
+<!-- NOTICE BANNER -->
+<div id="noticeBanner">
+  <i class="fa fa-bullhorn"></i>
+  <span id="noticeBannerText"></span>
+  <button class="nb-close" onclick="dismissNotice()" title="Close">&#x2715;</button>
+</div>
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -1670,6 +1696,38 @@
   // PWA Service Worker
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/sw.js').catch(function(){});
+  }
+
+  // ── NOTICE BANNER ──
+  var _noticeDismissed = sessionStorage.getItem('ta_notice_dismissed');
+  var _noticeColors = {
+    gold:{bg:'#d4a843',text:'#0b1a2e'},
+    green:{bg:'#16a34a',text:'#fff'},
+    red:{bg:'#dc2626',text:'#fff'},
+    blue:{bg:'#1d4ed8',text:'#fff'}
+  };
+  db.ref('siteNotice').on('value', function(snap){
+    var d = snap.val();
+    var banner = document.getElementById('noticeBanner');
+    if(!d || !d.active || !d.text){
+      banner.classList.remove('show');
+      document.body.classList.remove('has-notice');
+      return;
+    }
+    if(_noticeDismissed === d.text){ return; }
+    var c = _noticeColors[d.type] || _noticeColors.gold;
+    banner.style.background = c.bg;
+    banner.style.color = c.text;
+    document.getElementById('noticeBannerText').textContent = d.text;
+    banner.classList.add('show');
+    document.body.classList.add('has-notice');
+  });
+  function dismissNotice(){
+    var banner = document.getElementById('noticeBanner');
+    var txt = document.getElementById('noticeBannerText').textContent;
+    sessionStorage.setItem('ta_notice_dismissed', txt);
+    banner.classList.remove('show');
+    document.body.classList.remove('has-notice');
   }
 
   // Real-time listener for admin replies (Firebase)

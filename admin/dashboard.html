@@ -177,6 +177,7 @@ td:last-child{border-right:none}
   </div>
   <a class="nav-item active" id="navForm" href="#" onclick="switchTab('form',event)"><i class="fa fa-table"></i><span>Form Queries</span></a>
   <a class="nav-item" id="navChat" href="#" onclick="switchTab('chat',event)"><i class="fa fa-comment-dots"></i><span>Chat Queries</span> <span class="notif-dot" id="chatNotif" style="display:none"></span></a>
+  <a class="nav-item" id="navNotice" href="#" onclick="switchTab('notice',event)"><i class="fa fa-bullhorn"></i><span>Notice Board</span></a>
   <a class="nav-item" href="../index.html" target="_blank"><i class="fa fa-globe"></i><span>View Website</span></a>
   <a class="nav-item logout" href="#" onclick="logout()"><i class="fa fa-right-from-bracket"></i><span>Logout</span></a>
 </div>
@@ -262,6 +263,34 @@ td:last-child{border-right:none}
         </tr></thead>
         <tbody id="chatTbody"></tbody>
       </table>
+    </div>
+  </div>
+
+  <!-- NOTICE BOARD SECTION -->
+  <div id="noticeSection" style="display:none">
+    <div class="header">
+      <h1><i class="fa fa-bullhorn" style="color:#d4a843;font-size:16px"></i> Notice Board</h1>
+    </div>
+    <div style="max-width:640px;padding:24px">
+      <div style="background:#112240;border-radius:14px;padding:28px;border:1px solid rgba(212,168,67,.2)">
+        <label style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.5);text-transform:uppercase;display:block;margin-bottom:10px">Notice Message</label>
+        <textarea id="noticeText" rows="3" placeholder="Type your announcement here... e.g. Last date for ITR filing is 31 July 2025" style="width:100%;background:#0b1a2e;border:1px solid rgba(212,168,67,.25);border-radius:9px;padding:12px 14px;color:#fff;font-size:14px;font-family:inherit;resize:vertical;box-sizing:border-box"></textarea>
+        <label style="font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(255,255,255,.5);text-transform:uppercase;display:block;margin:16px 0 10px">Banner Style</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:#fff"><input type="radio" name="noticeType" value="gold" checked> <span style="width:14px;height:14px;background:#d4a843;border-radius:3px;display:inline-block"></span> Gold (Important)</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:#fff"><input type="radio" name="noticeType" value="green"> <span style="width:14px;height:14px;background:#22c55e;border-radius:3px;display:inline-block"></span> Green (Good News)</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:#fff"><input type="radio" name="noticeType" value="red"> <span style="width:14px;height:14px;background:#ef4444;border-radius:3px;display:inline-block"></span> Red (Urgent)</label>
+          <label style="cursor:pointer;display:flex;align-items:center;gap:6px;font-size:13px;color:#fff"><input type="radio" name="noticeType" value="blue"> <span style="width:14px;height:14px;background:#3b82f6;border-radius:3px;display:inline-block"></span> Blue (Info)</label>
+        </div>
+        <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap">
+          <button onclick="publishNotice()" style="background:#d4a843;color:#0b1a2e;border:none;padding:11px 28px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer"><i class="fa fa-bullhorn"></i> Publish on Website</button>
+          <button onclick="clearNotice()" style="background:rgba(239,68,68,.15);color:#ef4444;border:1px solid rgba(239,68,68,.3);padding:11px 22px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer"><i class="fa fa-times"></i> Remove Notice</button>
+        </div>
+        <div id="noticeLive" style="margin-top:24px;display:none">
+          <div style="font-size:11px;letter-spacing:1px;color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:8px">Currently Live on Website:</div>
+          <div id="noticeLivePreview" style="padding:12px 16px;border-radius:8px;font-size:14px;font-weight:600"></div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -428,10 +457,40 @@ function switchTab(tab, e){
   currentTab = tab;
   document.getElementById('navForm').classList.toggle('active', tab==='form');
   document.getElementById('navChat').classList.toggle('active', tab==='chat');
+  document.getElementById('navNotice').classList.toggle('active', tab==='notice');
   document.getElementById('formSection').style.display = tab==='form' ? 'block' : 'none';
   document.getElementById('chatSection').style.display = tab==='chat' ? 'block' : 'none';
+  document.getElementById('noticeSection').style.display = tab==='notice' ? 'block' : 'none';
   if(tab==='chat'){ markChatRead(); renderChat(); }
 }
+
+// ── NOTICE BOARD ──
+function publishNotice(){
+  var text = document.getElementById('noticeText').value.trim();
+  if(!text){ alert('Notice text likhein!'); return; }
+  var type = document.querySelector('input[name="noticeType"]:checked').value;
+  db.ref('siteNotice').set({active:true, text:text, type:type, updatedAt:Date.now()});
+  alert('Notice website pe live ho gayi!');
+}
+function clearNotice(){
+  db.ref('siteNotice').set({active:false, text:'', type:'gold', updatedAt:Date.now()});
+  document.getElementById('noticeText').value='';
+  document.getElementById('noticeLive').style.display='none';
+}
+db.ref('siteNotice').on('value', function(snap){
+  var d = snap.val();
+  if(!d || !d.active || !d.text){ document.getElementById('noticeLive').style.display='none'; return; }
+  var colors={gold:'#d4a843',green:'#22c55e',red:'#ef4444',blue:'#3b82f6'};
+  var bg={gold:'rgba(212,168,67,.15)',green:'rgba(34,197,94,.15)',red:'rgba(239,68,68,.15)',blue:'rgba(59,130,246,.15)'};
+  var prev = document.getElementById('noticeLivePreview');
+  prev.style.background = bg[d.type]||bg.gold;
+  prev.style.color = colors[d.type]||colors.gold;
+  prev.style.border = '1px solid '+(colors[d.type]||colors.gold);
+  prev.textContent = d.text;
+  document.getElementById('noticeLive').style.display='block';
+  document.getElementById('noticeText').value = d.text;
+  document.querySelector('input[name="noticeType"][value="'+d.type+'"]').checked=true;
+});
 
 // ── CHAT QUERIES (Firebase) ──
 function getCQ(){ return _allChats; }
